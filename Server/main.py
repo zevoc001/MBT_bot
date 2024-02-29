@@ -17,42 +17,13 @@ temp_user_data = {}
 hide_board = types.ReplyKeyboardRemove() # Удаление панели
 command_list = ['/start', '/profile']
 
-def get_mess_photo(user_id):
-    mess = bot.send_message(user_id, 'Отправьте пожалуйста ваше фото', reply_markup=hide_board)
-    return mess
-
-def get_mess_fio(user_id):
-    mess = bot.send_message(user_id, 'Введите ваше ФИО (полностью)', reply_markup=hide_board)
-    return mess
-
-def get_mess_sex(user_id):
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        button_male = types.KeyboardButton('Мужской')
-        button_female = types.KeyboardButton('Женский')
-        markup.add(button_male, button_female)
-        mess = bot.send_message(user_id, 'Выберите ваш пол', reply_markup=markup)
-        return mess
-
-def get_mess_born(user_id):
-    mess = bot.send_message(user_id, 'Напиши свою дату рождения в формате дд.мм.гггг', reply_markup=hide_board)
-    return mess
-
-def get_mess_education_level(user_id):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    button_school = types.KeyboardButton('Школа')
-    button_college = types.KeyboardButton('Среднее профессиональное')
-    button_high_school = types.KeyboardButton('Высшее')
-    button_student = types.KeyboardButton('Студент')
-    markup.add(button_school, button_college, button_high_school, button_student)
-    mess = bot.send_message(user_id, 'Выберите уровень вашего образования', reply_markup=markup)
-    return mess
 
 def get_mess_course(user_id):
     mess = bot.send_message(user_id, 'Введите номер курса, на котором вы обучаетесь', reply_markup=hide_board)
     return mess
 
 def get_mess_profission(user_id):
-    mess = bot.send_message(user_id, 'Введите специальность и место обучения', reply_markup=hide_board)
+    
     return mess
 
 def get_mess_min_salary(user_id):
@@ -141,7 +112,7 @@ def process_photo_step(message):
         file_info = bot.get_file(file_id)
         photo = bot.download_file(file_info.file_path)
         temp_user_data[user_id]['Фотография'] = photo
-        mess = get_mess_fio(user_id)
+        mess = bot.send_message(user_id, 'Введите ваше ФИО (полностью)', reply_markup=hide_board)
         bot.register_next_step_handler(mess, process_fio_step)
     except:
         mess = bot.send_message(user_id, 'Ошибка загрузки! Попробуйте отправить другую фотографию', reply_markup=hide_board)
@@ -151,7 +122,11 @@ def process_fio_step(message):
     user_id = message.from_user.id
     if bool(re.match(r'^[а-яА-Я\s]+$', message.text)):
         temp_user_data[user_id]['ФИО'] = message.text
-        mess = get_mess_sex(user_id)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        button_male = types.KeyboardButton('Мужской')
+        button_female = types.KeyboardButton('Женский')
+        markup.add(button_male, button_female)
+        mess = bot.send_message(user_id, 'Выберите ваш пол', reply_markup=markup)
         bot.register_next_step_handler(mess, process_sex_step)
     else:
         mess = bot.send_message(user_id, ' Пожалуйста, попробуйте ввести ФИО иначе.')
@@ -161,7 +136,7 @@ def process_sex_step(message):
     user_id = message.from_user.id
     if message.text in ['Мужской', 'Женский']:
         temp_user_data[user_id]['Пол'] = message.text
-        mess = get_mess_born(user_id)
+        mess = bot.send_message(user_id, 'Напиши свою дату рождения в формате дд.мм.гггг', reply_markup=hide_board)
         bot.register_next_step_handler(mess, process_born_step)
     else:
         mess = bot.send_message(user_id, 'Некорректный ввод. Пожалуйста, выберите один из представленных вариантов ответа')
@@ -172,7 +147,13 @@ def process_born_step(message):
     try:
         datetime.datetime.strptime(message.text, '%d.%m.%Y')
         temp_user_data[user_id]['Дата рождения'] = message.text
-        mess = get_mess_education_level(user_id)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        button_school = types.KeyboardButton('Школа')
+        button_college = types.KeyboardButton('Среднее профессиональное')
+        button_high_school = types.KeyboardButton('Высшее')
+        button_student = types.KeyboardButton('Студент')
+        markup.add(button_school, button_college, button_high_school, button_student)
+        mess = bot.send_message(user_id, 'Выберите уровень вашего образования', reply_markup=markup)
         bot.register_next_step_handler(mess, process_education_level_step)
     except ValueError:
         mess = bot.send_message(user_id, 'Некорректный ввод. Пожалуйства введите дату в соответствии с шаблоном (дд.мм.гггг)')
@@ -182,11 +163,11 @@ def process_education_level_step(message):
     user_id = message.from_user.id
     if message.text in ['Среднее профессиональное', 'Высшее']:
         temp_user_data[user_id]['Образование'] = message.text
-        mess = get_mess_profission(user_id)
+        mess = bot.send_message(user_id, 'Введите специальность и место обучения', reply_markup=hide_board)
         bot.register_next_step_handler(mess, process_profession_step)
     elif message.text == 'Студент':
         temp_user_data[user_id]['Образование'] = message.text
-        mess = get_mess_course(user_id)
+        mess = bot.send_message(user_id, 'Введите номер курса, на котором вы обучаетесь', reply_markup=hide_board)
         bot.register_next_step_handler(mess, process_course_step)
     elif message.text == 'Школа':
         temp_user_data[user_id]['Образование'] = message.text
