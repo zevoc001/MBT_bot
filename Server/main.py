@@ -1,16 +1,20 @@
 # -*- coding: utf-8 -*-
-import sys, re
+import sys, re, os
 import telebot
+from pathlib import Path
+from dotenv import load_dotenv
 import datetime
 from telebot import types
-# sys.path.insert(0, 'home\\test_task\\Telegram_bot\\DataBase')
+
+dotenv_path = os.path.join(Path().absolute(), 'example.env')
+load_dotenv(dotenv_path)
+sys.path.insert(0, os.getenv('DB_PATH'))
 from DataBase import Telegram_DB
 
-
-token = '6850135105:AAFGbka8Bi2tpedXNuMFvEmw-XdNOa6q22g'
-bot = telebot.TeleBot(token)
+print(os.getenv('BOT_TOKEN'))
+bot = telebot.TeleBot(os.getenv('BOT_TOKEN')) # Создаем бота
 temp_user_data = {}
-hide_board = types.ReplyKeyboardRemove()
+hide_board = types.ReplyKeyboardRemove() # Удаление панели
 command_list = ['/start', '/profile']
 
 def get_mess_photo(user_id):
