@@ -1,4 +1,5 @@
 /mbt.db
 /Telegram_bot.rar
 /example.env
-/Server/_pycache/
+/Server/_pycache_/
+/DataBase/_pycache_/
