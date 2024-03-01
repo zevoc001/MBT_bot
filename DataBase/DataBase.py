@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 import sqlite3
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+dotenv_path = os.path.join(Path().absolute(), 'example.env')
+load_dotenv(dotenv_path)
+DB_path = os.getenv('DB_PATH') + 'mbt.db'
+
 
 
 class Telegram_DB:
     def __init__(self):
-        self.conn = sqlite3.connect('mbt.db', check_same_thread=False)
+        self.conn = sqlite3.connect(DB_path, check_same_thread=False)
         self.cursor = self.conn.cursor()
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS users_data (

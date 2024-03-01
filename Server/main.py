@@ -18,62 +18,6 @@ hide_board = types.ReplyKeyboardRemove() # Удаление панели
 command_list = ['/start', '/profile']
 
 
-def get_mess_course(user_id):
-    mess = bot.send_message(user_id, 'Введите номер курса, на котором вы обучаетесь', reply_markup=hide_board)
-    return mess
-
-def get_mess_profission(user_id):
-    
-    return mess
-
-def get_mess_min_salary(user_id):
-    mess = bot.send_message(user_id, 'За сколько рублей в час вы готовы работать?\nНапишите числом', reply_markup=hide_board)
-    return mess
-
-def get_mess_hardwork(user_id, sex):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn_yes = types.KeyboardButton('Да')
-    btn_no = types.KeyboardButton('Нет')
-    markup.add(btn_yes, btn_no)
-    mess = bot.send_message(user_id, 'Готовы ли вы выполнять тяжелую работу (копать, ломать, строить)?', reply_markup=markup)
-    return mess
-
-def get_mess_midwork(user_id, sex):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn_yes = types.KeyboardButton('Да')
-    btn_no = types.KeyboardButton('Нет')
-    markup.add(btn_yes, btn_no)
-    if sex == 'Мужской':
-       mess = bot.send_message(user_id, 'Готовы ли вы выполнять работу средней сложности (уборка территорий, прочистка труб, и т.д.)?', reply_markup=markup)
-       return mess
-    else:
-        mess = bot.send_message(user_id, 'Готовы ли вы ухаживать за детьми или пожилими людьми?', reply_markup=markup)
-        return mess
-
-def get_mess_artwork(user_id):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn_yes = types.KeyboardButton('Да')
-    btn_no = types.KeyboardButton('Нет')
-    markup.add(btn_yes, btn_no)
-    mess = bot.send_message(user_id, 'Готовы ли вы выполнять творческую работу (аниматорство, ведение соцсетей, фото/видеосъемка и.т.д.)?', reply_markup=markup)
-    return mess
-
-def get_mess_addwork(user_id):
-    mess = bot.send_message(user_id, 'Напишите, какие иные работы вы готовы выполнять (Если нет иных работ, напишите нет)', reply_markup=hide_board)
-    return mess
-
-def get_mess_phone(user_id):
-    mess = bot.send_message(user_id, 'Введите ваш контактный номер телефона (формат 89995550011)', reply_markup=hide_board)
-    return mess
-
-def get_mess_tools(user_id):
-    mess = bot.send_message(user_id, 'Какие инструменты для работы у вас есть (компьютер, дрель, электропила и т.д.)?', reply_markup=hide_board)
-    return mess
-
-def get_mess_local(user_id):
-    mess = bot.send_message(user_id, 'Почти закончили. Осталось написать ваш адрес проживания (город, район, улица, дом)', reply_markup=hide_board)
-    return mess
-
 def get_mess_final(user_id):
     mess = 'Отлично, давайте еще раз проверим, все ли верно. Вот ваши данные'
     for i in temp_user_data[user_id]:
@@ -89,20 +33,20 @@ def start(message):
         info = db.get_user_info(user_id)
         fio = info[2]
         markup = types.InlineKeyboardMarkup(row_width=1)
-        button = types.InlineKeyboardButton('Да', callback_data='finding_job')
-        markup.add(button)
+        btn_find = types.InlineKeyboardButton('Да', callback_data='finding_job')
+        markup.add(btn_find)
         bot.send_message(user_id, 'Здравствуйте, {0}. Хотите начать поиск работы?'.format(fio), reply_markup=markup)
     else:
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        button = types.KeyboardButton('Да')
-        markup.add(button)
-        mess = bot.send_message(user_id, 'Здравствуйте. Мы компания, которая помогает найти работу. В данным момент мы работаем в тестовом режиме. Вы можете помочь нам, направляя рекомендации и пожелания на почту: ...,\nпо телефону: +7 962 453-99-94 (Telegram, WhatsApp),\n или при посещении нашего офиса по адресу: г. Ставрополь, ул.  Михаила морозова, д 25.\nСогласны ли вы продолжить работу в таком режиме?', reply_markup=markup)
+        btn_fill = types.KeyboardButton('Заполнить анкету')
+        markup.add(btn_fill)
+        mess = bot.send_message(user_id, 'Здравствуйте. Мы общественная организация ,которая поможет Вам найти как основную работу, так и подработку. Предлагаем Вам заполнить небльшую анкету', reply_markup=markup)
         bot.register_next_step_handler(mess, start_reg)
 
 def start_reg(message):
     user_id = message.from_user.id
     temp_user_data[user_id] = {}
-    mess = bot.send_message(user_id, 'Хорошо, приступим! Для продолжения необходимо заполнить небольшую анкету.\nОтправьте пожалуйста свое фото', reply_markup=hide_board)
+    mess = bot.send_message(user_id, 'Хорошо, приступим! Отправьте пожалуйста Ваше фото', reply_markup=hide_board)
     bot.register_next_step_handler(mess, process_photo_step)
 
 def process_photo_step(message):
@@ -111,8 +55,8 @@ def process_photo_step(message):
         file_id = message.photo[-1].file_id
         file_info = bot.get_file(file_id)
         photo = bot.download_file(file_info.file_path)
-        temp_user_data[user_id]['Фотография'] = photo
-        mess = bot.send_message(user_id, 'Введите ваше ФИО (полностью)', reply_markup=hide_board)
+        temp_user_data[user_id]['photo'] = photo
+        mess = bot.send_message(user_id, 'Введите Вашу фамилию, имя и отчество (при наличии)', reply_markup=hide_board)
         bot.register_next_step_handler(mess, process_fio_step)
     except:
         mess = bot.send_message(user_id, 'Ошибка загрузки! Попробуйте отправить другую фотографию', reply_markup=hide_board)
@@ -121,22 +65,32 @@ def process_photo_step(message):
 def process_fio_step(message):
     user_id = message.from_user.id
     if bool(re.match(r'^[а-яА-Я\s]+$', message.text)):
-        temp_user_data[user_id]['ФИО'] = message.text
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        button_male = types.KeyboardButton('Мужской')
-        button_female = types.KeyboardButton('Женский')
-        markup.add(button_male, button_female)
-        mess = bot.send_message(user_id, 'Выберите ваш пол', reply_markup=markup)
+        temp_user_data[user_id]['fio'] = message.text
+        mess = bot.send_message(user_id, 'Введите Ваш контактный номер телефона (формат 89995550011)', reply_markup=hide_board)
         bot.register_next_step_handler(mess, process_sex_step)
     else:
         mess = bot.send_message(user_id, ' Пожалуйста, попробуйте ввести ФИО иначе.')
-        bot.register_next_step_handler(mess, process_fio_step)
+        bot.register_next_step_handler(mess, process_phone_step)
+
+def process_phone_step(message):
+    user_id = message.from_user.id
+    if bool(re.match(r"^\d+$", message.text)):
+        temp_user_data[user_id]['phone'] = message.text
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn_male = types.KeyboardButton('Мужской')
+        btn_female = types.KeyboardButton('Женский')
+        markup.add(btn_male, btn_female)
+        mess = bot.send_message(user_id, 'Выберите Ваш пол', reply_markup=markup)
+        bot.register_next_step_handler(mess, process_sex_step)
+    else:
+        mess = bot.send_message(user_id, 'Неверный формат, пожалуйства введите номер в соответствии с шаблоном (формат: 85551116699)')
+        bot.register_next_step_handler(mess, process_phone_step)
 
 def process_sex_step(message):
     user_id = message.from_user.id
     if message.text in ['Мужской', 'Женский']:
-        temp_user_data[user_id]['Пол'] = message.text
-        mess = bot.send_message(user_id, 'Напиши свою дату рождения в формате дд.мм.гггг', reply_markup=hide_board)
+        temp_user_data[user_id]['sex'] = message.text
+        mess = bot.send_message(user_id, 'Напиши Вашу дату рождения в формате дд.мм.гггг', reply_markup=hide_board)
         bot.register_next_step_handler(mess, process_born_step)
     else:
         mess = bot.send_message(user_id, 'Некорректный ввод. Пожалуйста, выберите один из представленных вариантов ответа')
@@ -146,32 +100,32 @@ def process_born_step(message):
     user_id = message.from_user.id
     try:
         datetime.datetime.strptime(message.text, '%d.%m.%Y')
-        temp_user_data[user_id]['Дата рождения'] = message.text
+        temp_user_data[user_id]['born'] = message.text
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         button_school = types.KeyboardButton('Школа')
         button_college = types.KeyboardButton('Среднее профессиональное')
         button_high_school = types.KeyboardButton('Высшее')
         button_student = types.KeyboardButton('Студент')
         markup.add(button_school, button_college, button_high_school, button_student)
-        mess = bot.send_message(user_id, 'Выберите уровень вашего образования', reply_markup=markup)
+        mess = bot.send_message(user_id, 'Выберите уровень Вашего образования', reply_markup=markup)
         bot.register_next_step_handler(mess, process_education_level_step)
     except ValueError:
-        mess = bot.send_message(user_id, 'Некорректный ввод. Пожалуйства введите дату в соответствии с шаблоном (дд.мм.гггг)')
+        mess = bot.send_message(user_id, 'Некорректный ввод. Пожалуйства введите корректную дату в соответствии с шаблоном (дд.мм.гггг)')
         bot.register_next_step_handler(mess, process_born_step)
 
 def process_education_level_step(message):
     user_id = message.from_user.id
     if message.text in ['Среднее профессиональное', 'Высшее']:
-        temp_user_data[user_id]['Образование'] = message.text
+        temp_user_data[user_id]['education_lvl'] = message.text
         mess = bot.send_message(user_id, 'Введите специальность и место обучения', reply_markup=hide_board)
         bot.register_next_step_handler(mess, process_profession_step)
     elif message.text == 'Студент':
-        temp_user_data[user_id]['Образование'] = message.text
+        temp_user_data[user_id]['education_lvl'] = message.text
         mess = bot.send_message(user_id, 'Введите номер курса, на котором вы обучаетесь', reply_markup=hide_board)
         bot.register_next_step_handler(mess, process_course_step)
     elif message.text == 'Школа':
-        temp_user_data[user_id]['Образование'] = message.text
-        mess = get_mess_min_salary(user_id)
+        temp_user_data[user_id]['education_lvl'] = message.text
+        mess = bot.send_message(user_id, 'За какую сумму в час вы готовы работать?', reply_markup=hide_board)
         bot.register_next_step_handler(mess, process_min_salary_step)
     else:
         mess = bot.send_message(user_id, 'Пожалуйста, выберите один из представленных вариантов ответов')
@@ -179,15 +133,15 @@ def process_education_level_step(message):
 
 def process_course_step(message):
     user_id = message.from_user.id
-    temp_user_data[user_id]['Курс'] = message.text
-    mess = get_mess_profission(user_id)
+    temp_user_data[user_id]['education_year'] = message.text
+    mess = bot.send_message(user_id, 'Введите специальность и место обучения', reply_markup=hide_board)
     bot.register_next_step_handler(mess, process_profession_step)
 
 def process_profession_step(message):
     user_id = message.from_user.id
     if message.text not in command_list:
-        temp_user_data[user_id]['Специальность'] = message.text
-        mess = get_mess_min_salary(user_id)
+        temp_user_data[user_id]['profession'] = message.text
+        mess = bot.send_message(user_id, 'За какую сумму в час вы готовы работать?', reply_markup=hide_board)
         bot.register_next_step_handler(mess, process_min_salary_step)
     else:
         mess = bot.send_message(user_id, 'Неверный ввод. Попробуйте снова')
@@ -196,8 +150,12 @@ def process_profession_step(message):
 def process_min_salary_step(message):
     user_id = message.from_user.id
     if bool(re.match(r"^\d+$", message.text)):
-        temp_user_data[user_id]['Минимальная оплата (в час)'] = message.text
-        mess = get_mess_hardwork(user_id, temp_user_data[user_id]['Пол'])
+        temp_user_data[user_id]['salary_min'] = message.text
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn_yes = types.KeyboardButton('Да')
+        btn_no = types.KeyboardButton('Нет')
+        markup.add(btn_yes, btn_no)
+        mess = bot.send_message(user_id, 'Готовы ли вы выполнять тяжелую работу (копать, ломать, строить, быть грузчиком)?', reply_markup=markup)
         bot.register_next_step_handler(mess, process_hardwork_step)
     else:
         mess = bot.send_message(user_id, 'Неверный ввод. Введите пожалуйста числом')
@@ -207,8 +165,14 @@ def process_hardwork_step(message):
     user_id = message.from_user.id
     if message.text in ['Да', 'Нет']:
         temp_user_data[user_id]['Тяжелая работа'] = message.text
-        mess = get_mess_midwork(user_id,  temp_user_data[user_id]['Пол'])
-        bot.register_next_step_handler(mess, process_midwork_step)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn_yes = types.KeyboardButton('Да')
+        btn_no = types.KeyboardButton('Нет')
+        markup.add(btn_yes, btn_no)
+        if temp_user_data[user_id]['Пол'] == 'Мужской':
+            mess = bot.send_message(user_id, 'Готовы ли вы выполнять работу средней сложности (уборка территорий, прочистка труб, и т.д.)?', reply_markup=markup)
+        else:
+            mess = bot.send_message(user_id, 'Готовы ли вы ухаживать за детьми или пожилими людьми?', reply_markup=markup)
     else:
         mess = bot.send_message(user_id, 'Неверный ввод. Выберите один из предложенных вариантов ответа')
         bot.register_next_step_handler(mess, process_hardwork_step)
@@ -217,7 +181,11 @@ def process_midwork_step(message):
     user_id = message.from_user.id
     if message.text in ['Да', 'Нет']:
         temp_user_data[user_id]['Работа средней сложности'] = message.text
-        mess = get_mess_artwork(user_id)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn_yes = types.KeyboardButton('Да')
+        btn_no = types.KeyboardButton('Нет')
+        markup.add(btn_yes, btn_no)
+        mess = bot.send_message(user_id, 'Готовы ли вы выполнять творческую работу (аниматорство, ведение соцсетей, фото/видеосъемка и.т.д.)?', reply_markup=markup)
         bot.register_next_step_handler(mess, process_artwork_step)
     else:
         mess = bot.send_message(user_id, 'Неверный ввод. Выберите один из предложенных вариантов ответа')
@@ -227,7 +195,7 @@ def process_artwork_step(message):
     user_id = message.from_user.id
     if message.text in ['Да', 'Нет']:
         temp_user_data[user_id]['Творческая работа'] = message.text
-        mess = get_mess_addwork(user_id)
+        mess = bot.send_message(user_id, 'Напишите, какие иные работы вы готовы выполнять (Если нет иных работ, напишите нет)', reply_markup=hide_board)
         bot.register_next_step_handler(mess, process_addwork_step)
     else:
         mess = bot.send_message(user_id, 'Неверный ввод. Выберите один из предложенных вариантов ответа')
@@ -236,7 +204,7 @@ def process_artwork_step(message):
 def process_addwork_step(message):
     user_id = message.from_user.id
     temp_user_data[user_id]['Иные работы'] = message.text
-    mess = get_mess_tools(user_id)
+    mess = bot.send_message(user_id, 'Какие инструменты для работы у вас есть (компьютер, дрель, электропила и т.д.)?', reply_markup=hide_board)
     bot.register_next_step_handler(mess, process_tools_step)
 
 def process_tools_step(message):
@@ -245,15 +213,7 @@ def process_tools_step(message):
     mess = get_mess_phone(user_id)
     bot.register_next_step_handler(mess, process_phone_step)
 
-def process_phone_step(message):
-    user_id = message.from_user.id
-    if bool(re.match(r"^\d+$", message.text)):
-        temp_user_data[user_id]['Телефон'] = message.text
-        mess = get_mess_local(user_id)
-        bot.register_next_step_handler(mess, process_local_step)
-    else:
-        mess = bot.send_message(user_id, 'Неверный формат, пожалуйства введите номер в соответствии с шаблоном (формат: 85551116699)')
-        bot.register_next_step_handler(mess, process_phone_step)
+
 
 def process_local_step(message):
     user_id = message.from_user.id
