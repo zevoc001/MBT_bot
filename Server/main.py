@@ -8,8 +8,7 @@ from telebot import types
 
 dotenv_path = os.path.join(Path().absolute(), 'example.env')
 load_dotenv(dotenv_path)
-sys.path.insert(0, os.getenv('DB_PATH'))
-print(os.getenv('DB_PATH'))
+#sys.path.insert(0, os.getenv('DB_PATH'))
 from DataBase import Telegram_DB
 
 print(os.getenv('BOT_TOKEN'))
