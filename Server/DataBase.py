@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 dotenv_path = os.path.join(Path().absolute(), 'example.env')
-print(dotenv_path)
 load_dotenv(dotenv_path)
 
 
@@ -17,7 +16,6 @@ class Telegram_DB:
         host= os.getenv('DB_HOST')
         port = os.getenv('DB_PORT')
         conn_string = "dbname='{0}' user='{1}' password='{2}' host='{3}' port='{4}'".format(db_name, user, password, host, port)
-        print(conn_string)
         self.conn = psycopg2.connect(conn_string)
     
         self.cursor = self.conn.cursor()
