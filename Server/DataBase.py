@@ -6,6 +6,7 @@ from pathlib import Path
 
 dotenv_path = os.path.join(Path().absolute(), 'example.env')
 load_dotenv(dotenv_path)
+print(os.getenv("DB_HOST"))
 
 
 class Telegram_DB:

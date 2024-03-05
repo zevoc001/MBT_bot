@@ -9,7 +9,6 @@ from telebot import types
 dotenv_path = os.path.join(Path().absolute(), 'example.env')
 load_dotenv(dotenv_path)
 from DataBase import Telegram_DB
-print("DB_HOST")
 
 bot = telebot.TeleBot(os.getenv('BOT_TOKEN')) # Создаем бота
 temp_user_data = {}
