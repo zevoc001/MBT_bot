@@ -16,6 +16,7 @@ class Telegram_DB:
         host= os.getenv('DB_HOST')
         port = os.getenv('DB_PORT')
         conn_string = "dbname='{0}' user='{1}' password='{2}' host='{3}' port='{4}'".format(db_name, user, password, host, port)
+        print(conn_string)
         self.conn = psycopg2.connect(conn_string)
     
         self.cursor = self.conn.cursor()
@@ -58,14 +59,14 @@ class Telegram_DB:
     
     def add_user(self, user_id, data_reg, photo, fio, sex, born, education_level, course, profession, min_salary, hardwork, midwork, artwork, addwork, tools, phone, residence_place):
         self.cursor.execute('''
-        INSERT INTO users_data ("Телеграм_ID", "Дата регистрации", Фотография, ФИО, Пол, "Дата рождения", Образование, Курс, Специальность, "Мин. ЗП", "Тяжелый труд", "Средний труд", "Творческий труд", "Иные работы", Инструменты, Телефон, "Место жительства")
+        INSERT INTO users_data ("Телеграм_ID", "Дата регистрации", "Фотография", "ФИО", "Пол", "Дата рождения", "Образование", "Курс", "Специальность", "Мин. ЗП", "Тяжелый труд", "Средний труд", "Творческий труд", "Иные работы", "Инструменты", Телефон, "Место жительства")
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         ''', (user_id, data_reg, photo, fio, sex, born, education_level, course, profession, min_salary, hardwork, midwork, artwork, addwork, tools, phone, residence_place))
         self.conn.commit()
     
     def get_user_info(self, user_id):
         self.cursor.execute('''
-        SELECT "Дата регистрации", Фотография, ФИО, Пол, "Дата рождения", Образование, Курс, Специальность, "Мин. ЗП", "Тяжелый труд", "Средний труд", "Творческий труд", "Иные работы", Инструменты, Телефон, "Место жительства", Заработок, Заказы FROM users_data
+        SELECT "Дата регистрации", "Фотография", "ФИО", "Пол", "Дата рождения", "Образование", "Курс", "Специальность", "Мин. ЗП", "Тяжелый труд", "Средний труд", "Творческий труд", "Иные работы", "Инструменты", "Телефон", "Место жительства", "Заработок", "Заказы" FROM users_data
         WHERE "Телеграм_ID" = %s
         ''', (user_id, ))
         result = self.cursor.fetchone()
@@ -86,20 +87,20 @@ class Telegram_DB:
         self.cursor.execute('''
         UPDATE users_data
         SET "Дата регистрации" = %s, 
-            Фотография = %s, 
-            ФИО = %s, 
-            Пол = %s, 
+            "Фотография" = %s, 
+            "ФИО" = %s, 
+            "Пол" = %s, 
             "Дата рождения" = %s, 
-            Образование = %s, 
-            Курс = %s, 
-            Специальность = %s, 
+            "Образование" = %s, 
+            "Курс" = %s, 
+            "Специальность" = %s, 
             "Мин. ЗП" = %s, 
             "Тяжелый труд" = %s, 
             "Средний труд" = %s, 
-            [Творческий труд] = %s, 
+            "Творческий труд" = %s, 
             "Иные работы" = %s, 
-            Инструменты = %s, 
-            Телефон = %s, 
+            "Инструменты" = %s, 
+            "Телефон" = %s, 
             "Место жительства" = %s
         WHERE "Телеграм_ID" = %s
         ''', (data_reg, photo, fio, sex, born, education_level, course, profession, min_salary, hardwork, midwork, artwork, addwork, tools, phone, residence_place, user_id))
