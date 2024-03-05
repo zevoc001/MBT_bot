@@ -17,12 +17,9 @@ temp_user_data = {}
 hide_board = types.ReplyKeyboardRemove() # Удаление панели
 command_list = ['/start', '/profile']
 
-def get_mess_photo(user_id):
-    mess = bot.send_message(user_id, 'Отправьте пожалуйста ваше фото', reply_markup=hide_board)
-    return mess
 
 def get_mess_fio(user_id):
-    mess = bot.send_message(user_id, 'Введите ваше ФИО (полностью)', reply_markup=hide_board)
+    mess = bot.send_message(user_id, 'Введите пожалуйста Вашу фамилию, имя и отчество', reply_markup=hide_board)
     return mess
 
 def get_mess_sex(user_id):
@@ -30,11 +27,11 @@ def get_mess_sex(user_id):
         button_male = types.KeyboardButton('Мужской')
         button_female = types.KeyboardButton('Женский')
         markup.add(button_male, button_female)
-        mess = bot.send_message(user_id, 'Выберите ваш пол', reply_markup=markup)
+        mess = bot.send_message(user_id, 'Выберите Ваш пол', reply_markup=markup)
         return mess
 
 def get_mess_born(user_id):
-    mess = bot.send_message(user_id, 'Напиши свою дату рождения в формате дд.мм.гггг', reply_markup=hide_board)
+    mess = bot.send_message(user_id, 'Напишите Вашу дату рождения в формате дд.мм.гггг', reply_markup=hide_board)
     return mess
 
 def get_mess_education_level(user_id):
@@ -44,11 +41,11 @@ def get_mess_education_level(user_id):
     button_high_school = types.KeyboardButton('Высшее')
     button_student = types.KeyboardButton('Студент')
     markup.add(button_school, button_college, button_high_school, button_student)
-    mess = bot.send_message(user_id, 'Выберите уровень вашего образования', reply_markup=markup)
+    mess = bot.send_message(user_id, 'Выберите уровень Вашего образования', reply_markup=markup)
     return mess
 
 def get_mess_course(user_id):
-    mess = bot.send_message(user_id, 'Введите номер курса, на котором вы обучаетесь', reply_markup=hide_board)
+    mess = bot.send_message(user_id, 'Введите номер курса, на котором Вы обучаетесь', reply_markup=hide_board)
     return mess
 
 def get_mess_profission(user_id):
@@ -56,7 +53,7 @@ def get_mess_profission(user_id):
     return mess
 
 def get_mess_min_salary(user_id):
-    mess = bot.send_message(user_id, 'За сколько рублей в час вы готовы работать?\nНапишите числом', reply_markup=hide_board)
+    mess = bot.send_message(user_id, 'За какую сумму в час Вы готовы работать?\nНапишите числом', reply_markup=hide_board)
     return mess
 
 def get_mess_hardwork(user_id, sex):
@@ -64,47 +61,57 @@ def get_mess_hardwork(user_id, sex):
     btn_yes = types.KeyboardButton('Да')
     btn_no = types.KeyboardButton('Нет')
     markup.add(btn_yes, btn_no)
-    mess = bot.send_message(user_id, 'Готовы ли вы выполнять тяжелую работу (копать, ломать, строить)?', reply_markup=markup)
+    mess = bot.send_message(user_id, 'Готовы ли Вы выполнять тяжелую работу (копать, ломать, строить, быть грузчиком)?', reply_markup=markup)
     return mess
 
-def get_mess_midwork(user_id, sex):
+def get_mess_midwork(user_id):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn_yes = types.KeyboardButton('Да')
     btn_no = types.KeyboardButton('Нет')
     markup.add(btn_yes, btn_no)
-    if sex == 'Мужской':
-       mess = bot.send_message(user_id, 'Готовы ли вы выполнять работу средней сложности (уборка территорий, прочистка труб, и т.д.)?', reply_markup=markup)
-       return mess
-    else:
-        mess = bot.send_message(user_id, 'Готовы ли вы ухаживать за детьми или пожилими людьми?', reply_markup=markup)
-        return mess
+    mess = bot.send_message(user_id, 'Готовы ли Вы выполнять работу в сфере обслуживания (уборка, няня, выгул собак ...)?', reply_markup=markup)
+    return mess
 
 def get_mess_artwork(user_id):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn_yes = types.KeyboardButton('Да')
     btn_no = types.KeyboardButton('Нет')
     markup.add(btn_yes, btn_no)
-    mess = bot.send_message(user_id, 'Готовы ли вы выполнять творческую работу (аниматорство, ведение соцсетей, фото/видеосъемка и.т.д.)?', reply_markup=markup)
+    mess = bot.send_message(user_id, 'Готовы ли Вы выполнять творческую работу (аниматорство, ведение соцсетей, фото/видеосъемка и.т.д.)?', reply_markup=markup)
     return mess
 
 def get_mess_addwork(user_id):
-    mess = bot.send_message(user_id, 'Напишите, какие иные работы вы готовы выполнять (Если нет иных работ, напишите нет)', reply_markup=hide_board)
+    mess = bot.send_message(user_id, 'Напишите пожалуйста, какие специализированные виды работ или услуг Вы выполняли и какими навыками обладаете?', reply_markup=hide_board)
     return mess
 
 def get_mess_phone(user_id):
-    mess = bot.send_message(user_id, 'Введите ваш контактный номер телефона (формат 89995550011)', reply_markup=hide_board)
+    mess = bot.send_message(user_id, 'Введите Ваш контактный номер телефона (формат 89995550011)', reply_markup=hide_board)
     return mess
 
 def get_mess_tools(user_id):
-    mess = bot.send_message(user_id, 'Какие инструменты для работы у вас есть (компьютер, дрель, электропила и т.д.)?', reply_markup=hide_board)
+    mess = bot.send_message(user_id, 'Какие инструменты, оборудование или аппаратура у Вас имеется (компьютер, дрель, фотоаппарат ...)?', reply_markup=hide_board)
+    return mess
+
+def get_mess_car(user_id):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    btn_car = types.KeyboardButton('Машина')
+    btn_mop = types.KeyboardButton('Мопед')
+    btn_cycle = types.KeyboardButton('Велосипед')
+    btn_esam = types.KeyboardButton('Электросамокат')
+    btn_no = types.KeyboardButton('Нет')
+    markup.add(btn_car, btn_mop, btn_cycle, btn_esam, btn_no)
+    mess = bot.send_message(user_id, 'Выберите Ваше транспортное средство. При его отсутствии выберите Нет', reply_markup=markup)
     return mess
 
 def get_mess_local(user_id):
-    mess = bot.send_message(user_id, 'Почти закончили. Осталось написать ваш адрес проживания (город, район, улица, дом)', reply_markup=hide_board)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    btn_pass = types.KeyboardButton('Пропустить')
+    markup.add(btn_pass)
+    mess = bot.send_message(user_id, 'Почти закончили! Укажите пожалуйста Ваш адрес проживания (район, улица, дом). Это поможет нам быстрее найти работу поблизости', reply_markup=markup)
     return mess
 
 def get_mess_final(user_id):
-    mess = 'Отлично, давайте еще раз проверим, все ли верно. Вот ваши данные'
+    mess = 'Отлично, давайте еще раз проверим, все ли верно. Вот Ваши данные'
     for i in temp_user_data[user_id]:
         if i != 'Фотография':
             data = temp_user_data[user_id][i]
@@ -125,13 +132,13 @@ def start(message):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         button = types.KeyboardButton('Да')
         markup.add(button)
-        mess = bot.send_message(user_id, 'Здравствуйте. Мы компания, которая помогает найти работу. В данным момент мы работаем в тестовом режиме. Вы можете помочь нам, направляя рекомендации и пожелания на почту: ...,\nпо телефону: +7 962 453-99-94 (Telegram, WhatsApp),\n или при посещении нашего офиса по адресу: г. Ставрополь, ул.  Михаила морозова, д 25.\nСогласны ли вы продолжить работу в таком режиме?', reply_markup=markup)
+        mess = bot.send_message(user_id, 'Здравствуйте. Мы общественная организация, которая поможет Вам найти основную работу или подработку. Предлагаем Вам заполнить небольную анкету', reply_markup=markup)
         bot.register_next_step_handler(mess, start_reg)
 
 def start_reg(message):
     user_id = message.from_user.id
     temp_user_data[user_id] = {}
-    mess = bot.send_message(user_id, 'Хорошо, приступим! Для продолжения необходимо заполнить небольшую анкету.\nОтправьте пожалуйста свое фото', reply_markup=hide_board)
+    mess = bot.send_message(user_id, 'Хорошо, приступим!\nОтправьте пожалуйста Ваше фото', reply_markup=hide_board)
     bot.register_next_step_handler(mess, process_photo_step)
 
 def process_photo_step(message):
@@ -226,7 +233,7 @@ def process_hardwork_step(message):
     user_id = message.from_user.id
     if message.text in ['Да', 'Нет']:
         temp_user_data[user_id]['Тяжелая работа'] = message.text
-        mess = get_mess_midwork(user_id,  temp_user_data[user_id]['Пол'])
+        mess = get_mess_midwork(user_id)
         bot.register_next_step_handler(mess, process_midwork_step)
     else:
         mess = bot.send_message(user_id, 'Неверный ввод. Выберите один из предложенных вариантов ответа')
@@ -328,7 +335,7 @@ def process_save_step(message):
                     db.add_user(user_id, data_reg, photo, fio, sex, born, education_level, course, None, min_salary, hardwork, midwork, artwork, addwork, tools, phone, residence_place)
             else:
                 db.add_user(user_id, data_reg, photo, fio, sex, born, education_level, None, None, min_salary, hardwork, midwork, artwork, addwork, tools, phone, residence_place)
-            mess = 'Отлично, регистрация завершена'
+            mess = "Спасибо за регистрацию! Если возникли вопросы, можете обращаться\nПо адресу: г.Ставрополь, ул.Михаила Морозова, д.25\nПо телефону: 8-962-453-99-94 (WhatsApp, Telegram)\nПриглашайте друзей, мы будем рады видеть вас в нашей команде!\U0001F91D"
             temp_user_data.pop(user_id)
             bot.send_message(user_id, mess, reply_markup=hide_board)
             print('Зарегистрирован новый пользователь')
@@ -348,7 +355,7 @@ def profile(message):
     if db.user_is_exist(user_id): 
         columns = ['Дата регистрации', 'Фотография', 'ФИО', 'Пол', 'Дата рождения', 'Образование', 'Курс', 'Специальность', 'Минимальная оплата (в час)', 'Тяжелый труд', 'Труд средней сложности', 'Творческий труд', 'Иные работы', 'Инструменты в наличии', 'Телефон', 'Адрес проживания', 'Заработок', 'Заказы']
         user_info = db.get_user_info(user_id)
-        mess = 'Данные вашего профиля:'
+        mess = 'Данные Вашего профиля:'
         photo = user_info[1]
         for column, value in zip(columns, user_info):
             if (value != None and column != 'Фотография'):

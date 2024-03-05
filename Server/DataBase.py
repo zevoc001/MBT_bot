@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 dotenv_path = os.path.join(Path().absolute(), 'example.env')
+print(dotenv_path)
 load_dotenv(dotenv_path)
 
 
