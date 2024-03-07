@@ -15,11 +15,57 @@ temp_user_data = {}
 hide_board = types.ReplyKeyboardRemove() # Удаление панели
 command_list = ['/start', '/profile']
 
+def save_user_db(user_id):
+    # Для существующего в БД пользователя
+    if db.is_user_exists(user_id):
+        db.edit_user(
+            temp_user_data[user_id]['user_id'],
+            temp_user_data[user_id]['photo'],
+            temp_user_data[user_id]['fio'],
+            temp_user_data[user_id]['sex'],
+            temp_user_data[user_id]['born'],
+            temp_user_data[user_id]['education_level'],
+            temp_user_data[user_id]['course'],
+            temp_user_data[user_id]['profession'],
+            temp_user_data[user_id]['min_salary'],
+            temp_user_data[user_id]['hardwork'],
+            temp_user_data[user_id]['midwork'],
+            temp_user_data[user_id]['artwork'],
+            temp_user_data[user_id]['addwork'],
+            temp_user_data[user_id]['tools'],
+            temp_user_data[user_id]['car'],
+            temp_user_data[user_id]['phone'],
+            temp_user_data[user_id]['residence_place'],
+        )
+    # Для несуществующего в БД пользователя
+    else:
+        temp_user_data[user_id]['data_reg'] = datetime.date.today()
+        db.add_user(
+            temp_user_data[user_id]['user_id'],
+            temp_user_data[user_id]['data_reg'],
+            temp_user_data[user_id]['photo'],
+            temp_user_data[user_id]['fio'],
+            temp_user_data[user_id]['sex'],
+            temp_user_data[user_id]['born'],
+            temp_user_data[user_id]['education_level'],
+            temp_user_data[user_id]['course'],
+            temp_user_data[user_id]['profession'],
+            temp_user_data[user_id]['min_salary'],
+            temp_user_data[user_id]['hardwork'],
+            temp_user_data[user_id]['midwork'],
+            temp_user_data[user_id]['artwork'],
+            temp_user_data[user_id]['addwork'],
+            temp_user_data[user_id]['tools'],
+            temp_user_data[user_id]['car'],
+            temp_user_data[user_id]['phone'],
+            temp_user_data[user_id]['residence_place'],
+        )
+
 
 @bot.message_handler(commands=['start'])
 def start(message):
     user_id = message.from_user.id
-    if db.user_is_exist(user_id):
+    if db.is_user_exists(user_id):
         info = db.get_user_info(user_id)
         fio = info[2]
         markup = types.InlineKeyboardMarkup(row_width=1)
@@ -35,7 +81,27 @@ def start(message):
 
 def start_reg(message):
     user_id = message.from_user.id
-    temp_user_data[user_id] = {'user_id': user_id}
+    temp_user_data[user_id] = {
+        'user_id': user_id, 
+        'data_reg': None, 
+        'photo': None,
+        'fio': None,
+        'sex': None,
+        'born': None,
+        'born': None,
+        'education_level': None,
+        'course': None,
+        'profession': None,
+        'min_salary': None,
+        'hardwork': None,
+        'midwork': None,
+        'artwork': None,
+        'addwork': None,
+        'tools': None,
+        'car': None,
+        'phone': None,
+        'residence_place': None,
+    }
     mess = bot.send_message(user_id, 'Хорошо, приступим!\nОтправьте пожалуйста Ваше фото', reply_markup=hide_board)
     bot.register_next_step_handler(mess, process_photo_step)
 
@@ -193,9 +259,9 @@ def process_addwork_step(message):
     user_id = message.from_user.id
     temp_user_data[user_id]['addwork'] = message.text
     mess = bot.send_message(user_id, 'Какие инструменты, оборудование или аппаратура у Вас имеется (компьютер, дрель, фотоаппарат ...)?', reply_markup=hide_board)
-    bot.register_next_step_handler(mess, process_car_step)
+    bot.register_next_step_handler(mess, process_tools_step)
 
-def process_car_step(message):
+def process_tools_step(message):
     user_id = message.from_user.id
     temp_user_data[user_id]['tools'] = message.text
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -206,9 +272,9 @@ def process_car_step(message):
     btn_no = types.KeyboardButton('Нет')
     markup.add(btn_car, btn_mop, btn_cycle, btn_esam, btn_no)
     mess = bot.send_message(user_id, 'Выберите Ваше транспортное средство. При его отсутствии выберите Нет', reply_markup=markup)
-    bot.register_next_step_handler(mess, process_tools_step)
+    bot.register_next_step_handler(mess, process_car_step)
 
-def process_tools_step(message):
+def process_car_step(message):
     user_id = message.from_user.id
     temp_user_data[user_id]['car'] = message.text
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -227,39 +293,49 @@ def process_local_step(message):
     btn_save = types.KeyboardButton('Сохранить')
     btn_restart = types.KeyboardButton('Заполнить заново')
     markup.add(btn_save, btn_restart)
-    mess_data = 'Отлично, давайте еще раз проверим, все ли верно. Вот Ваши данные'
-    for i in temp_user_data[user_id]:
-        if i != 'photo':
-            data = temp_user_data[user_id][i]
-            mess_data += '\n{}: {}'.format(i, data)
+    columns = {
+        'fio': 'ФИО', 
+        'sex': 'Пол', 
+        'born': 'Дата рождения', 
+        'education_level': 'Образование', 
+        'course': 'Курс', 
+        'profession': 'Специальность', 
+        'min_salary': 'Минимальная ЗП', 
+        'hardwork': 'Тяжелая работа', 
+        'midwork': 'Работа в сервисе', 
+        'artwork': 'Творческая работа', 
+        'addwork': 'Дополнительные навыки',
+        'tools': 'Инструменты в наличии',
+        'car': 'Транспорт',
+        'phone': 'Контактный номер',
+        'residence_place': 'Место жительства',
+        }
+    mess_data = 'Отлично, давайте проверим корректность данных.'
+    for column in temp_user_data[user_id]:
+        if column not in ['photo', 'user_id', 'data_reg']:
+            data = temp_user_data[user_id][column]
+            if data == None: 
+                continue
+            column_name = columns[column]
+            mess_data += '\n{}: {}'.format(column_name, data)
     mess = bot.send_photo(user_id, photo, mess_data, reply_markup=markup)
     bot.register_next_step_handler(mess, process_save_step)
 
 def process_save_step(message):
     user_id = message.from_user.id
     if message.text == 'Сохранить':
-        temp_user_data[user_id]['data_reg'] = datetime.date.today()
-
-        if db.user_is_exist(user_id):
-            for i in temp_user_data[user_id]:
-                if i != 'photo':
-                    print(i, temp_user_data[user_id][i])
-
-            db.edit_user(temp_user_data[user_id])
+        if db.is_user_exists(user_id):
             mess = 'Отлично, данные обновлены'
-            temp_user_data.pop(user_id)
-            bot.send_message(user_id, mess, reply_markup=hide_board)
         else:
-            db.add_user(**temp_user_data[user_id])
             mess = "Спасибо за регистрацию! Если возникли вопросы, можете обращаться\nПо адресу: г.Ставрополь, ул.Михаила Морозова, д.25\nПо телефону: 8-962-453-99-94 (WhatsApp, Telegram)\nПриглашайте друзей, мы будем рады видеть вас в нашей команде!\U0001F91D"
-            temp_user_data.pop(user_id)
-            bot.send_message(user_id, mess, reply_markup=hide_board)
-            print('Зарегистрирован новый пользователь')
-
+        save_user_db(user_id)
+        temp_user_data.pop(user_id)
+        bot.send_message(user_id, mess, reply_markup=hide_board)
     elif message.text == "Заполнить заново":
-        temp_user_data[user_id] = {'user_id': user_id}
-        mess = bot.send_message(user_id, 'Хорошо, начнем сначала.\nОтправьте пожалуйста свое фото', reply_markup=hide_board)
-        bot.register_next_step_handler(mess, process_photo_step)
+        start_reg(message)
+        #temp_user_data[user_id] = {'user_id': user_id}
+        #mess = bot.send_message(user_id, 'Хорошо, начнем сначала.\nОтправьте пожалуйста свое фото', reply_markup=hide_board)
+        #bot.register_next_step_handler(mess, process_photo_step)
     else:
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn_save = types.KeyboardButton('Сохранить')
@@ -276,8 +352,28 @@ def get_job(message):
 @bot.message_handler(commands=['profile'])
 def profile(message):
     user_id = message.from_user.id
-    if db.user_is_exist(user_id): 
-        columns = ['Дата регистрации', 'Фотография', 'ФИО', 'Пол', 'Дата рождения', 'Образование', 'Курс', 'Специальность', 'Минимальная оплата (в час)', 'Тяжелый труд', 'Труд средней сложности', 'Творческий труд', 'Иные работы', 'Инструменты в наличии', 'Телефон', 'Адрес проживания', 'Заработок', 'Заказы']
+    if db.is_user_exists(user_id): 
+        columns = [
+            "Дата регистрации", 
+            "Фотография", 
+            "ФИО", 
+            "Пол", 
+            "Дата рождения", 
+            "Образование", 
+            "Курс", 
+            "Специальность", 
+            "Мин. ЗП", 
+            "Тяжелый труд", 
+            "Средний труд", 
+            "Творческий труд", 
+            "Иные работы", 
+            "Инструменты", 
+            "Машина", 
+            "Телефон", 
+            "Место жительства", 
+            "Заработок", 
+            "Заказы"
+        ]
         user_info = db.get_user_info(user_id)
         mess = 'Данные Вашего профиля:'
         photo = user_info[1]
@@ -300,9 +396,7 @@ def profile(message):
 def response(callback):
     user_id = callback.from_user.id
     if callback.data == 'restart':
-        temp_user_data[user_id] = {}
-        mess = bot.send_message(user_id, 'Хорошо, начнем! Отправьте свое фото', reply_markup=hide_board)
-        bot.register_next_step_handler(mess, process_photo_step)
+        start_reg(callback)
     
     if callback.data == 'finding_job':
         bot.send_message(user_id, 'Функция еще находится в разработке')
