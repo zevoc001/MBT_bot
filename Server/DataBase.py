@@ -18,12 +18,11 @@ class Telegram_DB:
         port = os.getenv('DB_PORT')
         conn_string = "dbname='{0}' user='{1}' password='{2}' host='{3}' port='{4}'".format(db_name, user, password, host, port)
         self.conn = psycopg2.connect(conn_string)
-    
         self.cursor = self.conn.cursor()
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS users_data (
                 id                  SERIAL PRIMARY KEY,
-                "Телеграм_ID"       INTEGER NOT NULL,
+                "Телеграм_ID"       TEXT NOT NULL,
                 "Доступ"            TEXT NOT NULL DEFAULT 'Гость',
                 "Дата регистрации"  DATE NOT NULL,
                 "Статус"            TEXT,
@@ -57,36 +56,92 @@ class Telegram_DB:
         ''')
         self.conn.commit()
     
-    def add_user(self, user_id, data_reg, photo, fio, sex, born, education_level, course, profession, min_salary, hardwork, midwork, artwork, addwork, tools, phone, residence_place):
+    def add_user(self, user_id, data_reg, photo, fio, sex, born, education_level, course,  profession, min_salary, hardwork, midwork, artwork, addwork, tools, car, phone, residence_place):
         self.cursor.execute('''
-        INSERT INTO users_data ("Телеграм_ID", "Дата регистрации", "Фотография", "ФИО", "Пол", "Дата рождения", "Образование", "Курс", "Специальность", "Мин. ЗП", "Тяжелый труд", "Средний труд", "Творческий труд", "Иные работы", "Инструменты", Телефон, "Место жительства")
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        ''', (user_id, data_reg, photo, fio, sex, born, education_level, course, profession, min_salary, hardwork, midwork, artwork, addwork, tools, phone, residence_place))
+        INSERT INTO users_data (
+            "Телеграм_ID", 
+            "Дата регистрации", 
+            "Фотография", 
+            "ФИО", 
+            "Пол", 
+            "Дата рождения", 
+            "Образование", 
+            "Курс", 
+            "Специальность", 
+            "Мин. ЗП", 
+            "Тяжелый труд", 
+            "Средний труд", 
+            "Творческий труд", 
+            "Иные работы", 
+            "Инструменты", 
+            "Машина", 
+            "Телефон", 
+            "Место жительства"
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        ''', (
+            user_id, 
+            data_reg, 
+            photo, 
+            fio, 
+            sex, 
+            born, 
+            education_level, 
+            course, 
+            profession, 
+            min_salary, 
+            hardwork, 
+            midwork, 
+            artwork, 
+            addwork, 
+            tools, 
+            car, 
+            phone, 
+            residence_place)
+            )
         self.conn.commit()
     
     def get_user_info(self, user_id):
         self.cursor.execute('''
-        SELECT "Дата регистрации", "Фотография", "ФИО", "Пол", "Дата рождения", "Образование", "Курс", "Специальность", "Мин. ЗП", "Тяжелый труд", "Средний труд", "Творческий труд", "Иные работы", "Инструменты", "Телефон", "Место жительства", "Заработок", "Заказы" FROM users_data
-        WHERE "Телеграм_ID" = %s
+        SELECT   
+            "Дата регистрации", 
+            "Фотография", 
+            "ФИО", 
+            "Пол", 
+            "Дата рождения", 
+            "Образование", 
+            "Курс", 
+            "Специальность", 
+            "Мин. ЗП", 
+            "Тяжелый труд", 
+            "Средний труд", 
+            "Творческий труд", 
+            "Иные работы", 
+            "Инструменты", 
+            "Машина", 
+            "Телефон", 
+            "Место жительства", 
+            "Заработок", 
+            "Заказы" 
+        FROM users_data
+        WHERE "Телеграм_ID" = CAST(%s AS TEXT);
         ''', (user_id, ))
         result = self.cursor.fetchone()
         return result
     
-    def user_is_exist(self, user_id):
+    def is_user_exists(self, user_id):
         self.cursor.execute('''
-        SELECT * FROM users_data
-        WHERE "Телеграм_ID" = %s
+        SELECT 1
+        FROM users_data
+        WHERE "Телеграм_ID" = CAST(%s AS TEXT);
         ''', (user_id, ))
         user = self.cursor.fetchone()
-        if user is not None:
-            return 1
-        else:
-            return 0
+        return user is not None
     
-    def edit_user(self, user_id, data_reg, photo, fio, sex, born, education_level, course, profession, min_salary, hardwork, midwork, artwork, addwork, tools, phone, residence_place):
+    def edit_user(self, user_id, photo, fio, sex, born, education_level, course,  profession, min_salary, hardwork, midwork, artwork, addwork, tools, car, phone, residence_place):
         self.cursor.execute('''
         UPDATE users_data
-        SET "Дата регистрации" = %s, 
+        SET  
             "Фотография" = %s, 
             "ФИО" = %s, 
             "Пол" = %s, 
@@ -99,11 +154,30 @@ class Telegram_DB:
             "Средний труд" = %s, 
             "Творческий труд" = %s, 
             "Иные работы" = %s, 
-            "Инструменты" = %s, 
+            "Инструменты" = %s,
+            "Машина" = %s,
             "Телефон" = %s, 
             "Место жительства" = %s
-        WHERE "Телеграм_ID" = %s
-        ''', (data_reg, photo, fio, sex, born, education_level, course, profession, min_salary, hardwork, midwork, artwork, addwork, tools, phone, residence_place, user_id))
+        WHERE "Телеграм_ID" = CAST(%s AS TEXT);
+        ''', (photo, 
+              fio, 
+              sex, 
+              born, 
+              education_level, 
+              course, 
+              profession, 
+              min_salary, 
+              hardwork, 
+              midwork, 
+              artwork, 
+              addwork, 
+              tools, 
+              car, 
+              phone, 
+              residence_place, 
+              user_id
+            )
+        )
         self.conn.commit()
         
 
