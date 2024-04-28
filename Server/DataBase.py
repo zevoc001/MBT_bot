@@ -1,185 +1,72 @@
-# -*- coding: utf-8 -*-
-import psycopg2
-import os
-from dotenv import load_dotenv
-from pathlib import Path
-
-dotenv_path = os.path.join(Path().absolute(), 'example.env')
-load_dotenv(dotenv_path)
-print(os.getenv("DB_HOST"))
+import aiohttp
+from datetime import date
+from config import DB_URL
+from pydantic import BaseModel
 
 
-class Telegram_DB:
-    def __init__(self):
-        db_name= os.getenv('DB_NAME')
-        user = os.getenv('DB_USER')
-        password = os.getenv('DB_PASSWORD')
-        host= os.getenv('DB_HOST')
-        port = os.getenv('DB_PORT')
-        conn_string = "dbname='{0}' user='{1}' password='{2}' host='{3}' port='{4}'".format(db_name, user, password, host, port)
-        self.conn = psycopg2.connect(conn_string)
-        self.cursor = self.conn.cursor()
-        self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users_data (
-                id                  SERIAL PRIMARY KEY,
-                "Телеграм_ID"       TEXT NOT NULL,
-                "Доступ"            TEXT NOT NULL DEFAULT 'Гость',
-                "Дата регистрации"  DATE NOT NULL,
-                "Статус"            TEXT,
-                "Рейтинг"           INTEGER DEFAULT 0,
-                "Заработок"         INTEGER DEFAULT 0,
-                "Заказы"            INTEGER DEFAULT 0,
-                "Комментарии"       TEXT,
-                "Фотография"        BYTEA,
-                "ФИО"               TEXT NOT NULL,
-                "Пол"               TEXT NOT NULL CHECK ("Пол" = 'Мужской' OR "Пол" = 'Женский'),
-                "Дата рождения"     TEXT NOT NULL,
-                "Место жительства"  TEXT,
-                "Образование"       TEXT NOT NULL,
-                "Курс"              INTEGER,
-                "Специальность"     TEXT,
-                "Мин. ЗП"           INTEGER,
-                "Тяжелый труд"      TEXT,
-                "Средний труд"      TEXT,
-                "Творческий труд"   TEXT,
-                "Иные работы"       TEXT,
-                "Рабочее время"     TEXT,
-                "Инструменты"       TEXT,
-                "Местный"           INTEGER,
-                "Языки"             TEXT,
-                "Телефон"           TEXT NOT NULL,
-                "Водитель"          TEXT,
-                "Машина"            TEXT,
-                "Служил"            TEXT,
-                "Доп. инф."         TEXT
-            );
-        ''')
-        self.conn.commit()
-    
-    def add_user(self, user_id, data_reg, photo, fio, sex, born, education_level, course,  profession, min_salary, hardwork, midwork, artwork, addwork, tools, car, phone, residence_place):
-        self.cursor.execute('''
-        INSERT INTO users_data (
-            "Телеграм_ID", 
-            "Дата регистрации", 
-            "Фотография", 
-            "ФИО", 
-            "Пол", 
-            "Дата рождения", 
-            "Образование", 
-            "Курс", 
-            "Специальность", 
-            "Мин. ЗП", 
-            "Тяжелый труд", 
-            "Средний труд", 
-            "Творческий труд", 
-            "Иные работы", 
-            "Инструменты", 
-            "Машина", 
-            "Телефон", 
-            "Место жительства"
-        )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-        ''', (
-            user_id, 
-            data_reg, 
-            photo, 
-            fio, 
-            sex, 
-            born, 
-            education_level, 
-            course, 
-            profession, 
-            min_salary, 
-            hardwork, 
-            midwork, 
-            artwork, 
-            addwork, 
-            tools, 
-            car, 
-            phone, 
-            residence_place)
-            )
-        self.conn.commit()
-    
-    def get_user_info(self, user_id):
-        self.cursor.execute('''
-        SELECT   
-            "Дата регистрации", 
-            "Фотография", 
-            "ФИО", 
-            "Пол", 
-            "Дата рождения", 
-            "Образование", 
-            "Курс", 
-            "Специальность", 
-            "Мин. ЗП", 
-            "Тяжелый труд", 
-            "Средний труд", 
-            "Творческий труд", 
-            "Иные работы", 
-            "Инструменты", 
-            "Машина", 
-            "Телефон", 
-            "Место жительства", 
-            "Заработок", 
-            "Заказы" 
-        FROM users_data
-        WHERE "Телеграм_ID" = CAST(%s AS TEXT);
-        ''', (user_id, ))
-        result = self.cursor.fetchone()
-        return result
-    
-    def is_user_exists(self, user_id):
-        self.cursor.execute('''
-        SELECT 1
-        FROM users_data
-        WHERE "Телеграм_ID" = CAST(%s AS TEXT);
-        ''', (user_id, ))
-        user = self.cursor.fetchone()
-        return user is not None
-    
-    def edit_user(self, user_id, photo, fio, sex, born, education_level, course,  profession, min_salary, hardwork, midwork, artwork, addwork, tools, car, phone, residence_place):
-        self.cursor.execute('''
-        UPDATE users_data
-        SET  
-            "Фотография" = %s, 
-            "ФИО" = %s, 
-            "Пол" = %s, 
-            "Дата рождения" = %s, 
-            "Образование" = %s, 
-            "Курс" = %s, 
-            "Специальность" = %s, 
-            "Мин. ЗП" = %s, 
-            "Тяжелый труд" = %s, 
-            "Средний труд" = %s, 
-            "Творческий труд" = %s, 
-            "Иные работы" = %s, 
-            "Инструменты" = %s,
-            "Машина" = %s,
-            "Телефон" = %s, 
-            "Место жительства" = %s
-        WHERE "Телеграм_ID" = CAST(%s AS TEXT);
-        ''', (photo, 
-              fio, 
-              sex, 
-              born, 
-              education_level, 
-              course, 
-              profession, 
-              min_salary, 
-              hardwork, 
-              midwork, 
-              artwork, 
-              addwork, 
-              tools, 
-              car, 
-              phone, 
-              residence_place, 
-              user_id
-            )
-        )
-        self.conn.commit()
-        
+async def get_data(url: str, params: dict = None) -> list:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, params=params) as response:
+            if response.status == 200:
+                data = await response.json()  # предполагается, что API возвращает JSON
+                return data
+            else:
+                return [{"error": "Failed to fetch data", "status_code": response.status}]
 
-    def close(self):
-        self.conn.close()
+
+async def post_data(url: str, data: dict) -> dict:
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, json=data) as response:
+            result_data = await response.json()  # предполагается, что API возвращает JSON
+            return result_data
+
+
+class UserInfo(BaseModel):
+    id: int
+    telegram_id: str
+    access: str | None
+    data_reg: date | None
+    status: str | None
+    rating: int | None
+    profit: int | None
+    offers: int | None
+    comment: str | None
+    name: str | None
+    sex: str | None
+    born: date | None
+    age: int | None
+    residence: str | None
+    education: str | None
+    course: int | None
+    profession: str | None
+    salary: int | None
+    hard_work: bool | None
+    mid_work: bool | None
+    art_work: bool | None
+    other_work: str | None
+    tools: str | None
+    language: str | None
+    phone: str | None
+    email: str | None
+    citizenship: str | None
+    wallet: str | None
+    is_driver: bool | None
+    transport: str | None
+    is_military: bool | None
+    other_info: str | None
+
+
+async def get_all_users() -> list:
+    users = await get_data(f'{DB_URL}/users/get_users_all')
+    return users
+
+
+async def get_user_by_tg(telegram_id: int) -> list:
+    user = await get_data(f'{DB_URL}/users/get_user_by_telegram', params={'telegram_id': telegram_id})
+    return user
+
+
+async def add_user(user: dict) -> dict:
+    user = await post_data(f'{DB_URL}/users/add_user', data=user)
+    return user
+
