@@ -5,10 +5,10 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from config import TOKEN
-from handlers.handler import router as main_router
-from handlers.registrtion import router as reg_router
-from handlers.orders import router as order_router
-from handlers.menu_admin import router as admin_router
+from handler import router as main_router
+from registrtion import router as reg_router
+from orders import router as order_router
+from menu_admin import router as admin_router
 
 from middleware import AccessMiddleware
 

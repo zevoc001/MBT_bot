@@ -7,13 +7,13 @@ from aiogram import Router, F
 
 from aiogram.types import (Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ReplyKeyboardRemove,
                            ReplyKeyboardMarkup, KeyboardButton)
-from ..states import StateMsg, StateFindUser, StateRegEmployer, StateCreateOrder
+from Server.states import StateMsg, StateFindUser, StateRegEmployer, StateCreateOrder
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from .. import database as db
-from .. import keyboard
-from .. import text
-from .. import utils
+import database as db
+import keyboard
+import text
+import utils
 
 router = Router()
 
