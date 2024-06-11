@@ -3,9 +3,9 @@ import re
 from aiogram import Router
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ReplyKeyboardMarkup, \
     KeyboardButton, ReplyKeyboardRemove
-from Server.states import StateReg
+from states import StateReg
 from aiogram.fsm.context import FSMContext
-from Server.text import profile_data
+from text import profile_data
 import logging
 
 logger = logging.getLogger(__name__)
