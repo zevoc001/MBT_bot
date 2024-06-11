@@ -34,7 +34,7 @@ async def find_user(msg: Message, state: FSMContext):
     users = await db.get_users_by_name(pattern=msg.text)
     users_keyboard = InlineKeyboardBuilder()
     for user in users:
-        users_keyboard.button(text=f'{user['name']}', callback_data=f'{user['id']}')
+        users_keyboard.button(text=f"{user['name']}", callback_data=f"{user['id']}")
     users_keyboard.add(
         InlineKeyboardButton(text='🔍 Найти других', callback_data='find_user'),
         InlineKeyboardButton(text='📋 На главную', callback_data='go_main_menu')
