@@ -4,8 +4,8 @@ from aiogram.types import Update, CallbackQuery
 from typing import Callable, Any, Awaitable
 import logging
 
-from Server import database as db
-from Server import admin
+import database as db
+import admin
 
 
 async def has_access(user_id: int, request: str) -> bool:
