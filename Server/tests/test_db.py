@@ -1,43 +1,30 @@
-from DataBase import add_user
+from database import add_user
 import unittest
 
 
-class DataBaseUnittest(unittest.TestCase):
-    def test_add_user(self):
+class DataBaseUnittest(unittest.IsolatedAsyncioTestCase):
+    async def test_add_user(self):
         user = {
-            "telegram_id": "string",
-            "access": "string",
-            "data_reg": "2024-04-22",
-            "status": "string",
-            "rating": 0,
-            "profit": 0,
-            "offers": 0,
-            "comment": "string",
-            "name": "string",
-            "sex": "string",
-            "born": "2024-04-22",
-            "age": 0,
-            "residence": "string",
-            "education": "string",
-            "course": 0,
-            "profession": "string",
-            "salary": 0,
-            "hard_work": True,
-            "mid_work": True,
-            "art_work": True,
-            "other_work": "string",
-            "tools": "string",
-            "language": "string",
-            "phone": "string",
-            "email": "string",
-            "citizenship": "string",
-            "wallet": "string",
-            "is_driver": True,
-            "transport": "string",
-            "is_military": True,
-            "other_info": "string"
+             "name": "\u0411\u043e\u0439\u043a\u043e \u0418\u0432\u0430\u043d "
+                     "\u0410\u043d\u0430\u0442\u043e\u043b\u0435\u044c\u0432\u0438\u0447",
+             "sex": "\u041c\u0443\u0436\u0441\u043a\u043e\u0439",
+             "born": "2002-07-10",
+             "residence": "\u0432\u0430\u043b\u043f",
+             "education": "\u0412\u044b\u0441\u0448\u0435\u0435",
+             "profession": "\u043f\u044b\u0432\u0430\u043f\u044b\u0432",
+             "salary": 345,
+             "hard_work": True,
+             "mid_work": True,
+             "art_work": True,
+             "other_work": "\u0414\u0430",
+             "tools": "\u0414\u0430",
+             "phone": "+79966311910",
+             "wallet": "3456345",
+             "transport": "\u043d\u0435\u0442",
+             "other_info": "\u043d\u0435\u0442",
+             "id": "6775110868"
         }
-        result = add_user(user)
+        result = await add_user(user)
         self.assertTrue(result)
 
 
