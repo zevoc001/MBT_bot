@@ -4,7 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from config import TOKEN
+import config
 from handler import router as main_router
 from registrtion import router as reg_router
 from orders import router as order_router
@@ -14,7 +14,7 @@ from middleware import AccessMiddleware
 
 
 async def main():
-    bot = Bot(token=TOKEN)
+    bot = Bot(token=config.TOKEN)
     dp = Dispatcher(storage=MemoryStorage())
 
     dp.include_router(main_router)
