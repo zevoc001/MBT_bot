@@ -6,9 +6,9 @@ from aiogram.filters import Command
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ReplyKeyboardRemove
 from aiogram.fsm.context import FSMContext
 
-from ..states import StateUserMenu, StateDeleteUser
-from .. import database as db
-from .. import keyboard, text, config, utils
+from states import StateUserMenu, StateDeleteUser
+import database as db
+import keyboard, text, config, utils
 
 router = Router()
 
