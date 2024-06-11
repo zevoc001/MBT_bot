@@ -34,7 +34,7 @@ async def find_employer(msg: Message, state: FSMContext):
     employers = await get_employers_by_name(pattern=msg.text)
     employers_keyboard = InlineKeyboardBuilder()
     for employer in employers:
-        employers_keyboard.button(text=f'{employer['name']}', callback_data=f'employer_{employer['id']}')
+        employers_keyboard.button(text=f"{employer['name']}", callback_data=f"employer_{employer['id']}")
     employers_keyboard.add(
         InlineKeyboardButton(text='🔍 Найти других', callback_data='find_employer'),
         InlineKeyboardButton(text='📋 На главную', callback_data='go_main_menu')
