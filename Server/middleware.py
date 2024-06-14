@@ -12,7 +12,12 @@ async def has_access(user_id: int, request: str) -> bool:
     user = await db.get_user(user_id)
     user_access = user['access']
     if request in admin.admin_command:
-        return user_access == 'admin'
+        try:
+            user = await db.get_user(user_id)
+            user_access = user['access']
+            return user_access == 'admin'
+        except:
+            return False
     else:
         return True
 

@@ -155,8 +155,8 @@ async def get_user(user_id: int) -> dict:
     url = f'{DB_URL}/api/users/{user_id}'
     try:
         result = await get_data(url)
-    except Exception:
-        result = False
+    except Exception as e:
+        raise e
     return result
 
 
