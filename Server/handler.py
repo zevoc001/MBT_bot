@@ -148,6 +148,9 @@ async def backward(callback: CallbackQuery):
 @router.callback_query(F.data == 'show_orders')
 async def show_orders(callback: CallbackQuery):
     orders = await db.get_orders_all()
+    if not orders:
+        await callback.message.answer('В настоящий момент нет доступных заказов')
+        return
     for order in orders:
         if order['status'] == 'Active':
             markup = InlineKeyboardMarkup(inline_keyboard=[
