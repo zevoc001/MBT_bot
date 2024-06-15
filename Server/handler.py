@@ -174,7 +174,7 @@ async def get_order(callback: CallbackQuery, state: FSMContext):
 async def my_orders(callback: CallbackQuery, state: FSMContext):
     user_id = callback.from_user.id
     orders = await db.get_users_orders(user_id)
-    if orders is False:
+    if not orders:
         await callback.message.answer('У вас нет активных заказов')
         return
     for order in orders:
@@ -198,6 +198,7 @@ async def my_orders(callback: CallbackQuery):
         await db.order_remove_worker(order_id, user_id)
         await callback.message.answer('Вы отказались от заказа')
     except Exception as e:
+        await callback.message.answer('Ошибка. Обратитесь в поддержку')
         logging.error(e)
 
 
