@@ -176,6 +176,7 @@ async def my_orders(callback: CallbackQuery, state: FSMContext):
     orders = await db.get_users_orders(user_id)
     if orders is False:
         await callback.message.answer('У вас нет активных заказов')
+        return
     for order in orders:
         if order['status'] == 'Finished':
             continue
