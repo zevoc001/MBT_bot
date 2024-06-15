@@ -34,7 +34,7 @@ async def find_user(msg: Message, state: FSMContext):
     users = await db.get_users_by_name(pattern=msg.text)
     users_keyboard = InlineKeyboardBuilder()
     for user in users:
-        users_keyboard.button(text=f"{user['name']}", callback_data=f"{user['id']}")
+        users_keyboard.button(text=f"{user['name']}", callback_data=f"user:{user['id']}")
     users_keyboard.add(
         InlineKeyboardButton(text='🔍 Найти других', callback_data='find_user'),
         InlineKeyboardButton(text='📋 На главную', callback_data='go_main_menu')
@@ -44,9 +44,9 @@ async def find_user(msg: Message, state: FSMContext):
     await state.set_state(StateFindUser.waiting_choose)
 
 
-@router.callback_query(StateFindUser.waiting_choose)
+@router.callback_query(StateFindUser.waiting_choose, F.data.startswith('user:'))
 async def choose_user(callback: CallbackQuery, state: FSMContext):
-    user_id = int(callback.data)
+    user_id = int(callback.data.split(':')[1])
     user_data = await db.get_user(user_id)
     msg = 'Данные профиля:\n'
     for key in text.profile_data:
@@ -69,8 +69,6 @@ async def choose_user(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == 'get_active_orders')
 async def get_active_orders(callback: CallbackQuery):
     orders = await db.get_orders_all()
-    environment = Environment(loader=FileSystemLoader('Server/templates/'))
-    template = environment.get_template('order_mess.txt')
     for order in orders:
         if order['status'] != 'Finished':
             markup = InlineKeyboardMarkup(inline_keyboard=[

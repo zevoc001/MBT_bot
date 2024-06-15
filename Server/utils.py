@@ -20,7 +20,7 @@ async def create_order_mess_full(**kwargs) -> str:
         kwargs['order_date'] = date.fromisoformat(kwargs['order_date'])
         kwargs['order_date'] = kwargs['order_date'].strftime('%d.%m.%Y')
 
-        environment = Environment(loader=FileSystemLoader('Server/templates/'))
+        environment = Environment(loader=FileSystemLoader('templates/'))
         template = environment.get_template('order_mess.txt')
         mess = template.render(kwargs)
         return mess
