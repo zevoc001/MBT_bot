@@ -148,16 +148,16 @@ async def backward(callback: CallbackQuery):
 @router.callback_query(F.data == 'show_orders')
 async def show_orders(callback: CallbackQuery):
     orders = await db.get_orders_all()
-    if not orders:
+    active_orders = list(filter(lambda order: order['status'] == 'Active', orders))
+    if not active_orders:
         await callback.message.answer('В настоящий момент нет доступных заказов')
         return
-    for order in orders:
-        if order['status'] == 'Active':
-            markup = InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text='Принять', callback_data=f'get_order_{order["id"]}'), ]
-            ])
-            order_mess = await utils.create_order_mess_full(**order)
-            await callback.message.answer(order_mess, reply_markup=markup)
+    for order in active_orders:
+        markup = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text='Принять', callback_data=f'get_order_{order["id"]}'), ]
+        ])
+        order_mess = await utils.create_order_mess_full(**order)
+        await callback.message.answer(order_mess, reply_markup=markup)
     await callback.answer()
 
 
@@ -179,6 +179,7 @@ async def my_orders(callback: CallbackQuery, state: FSMContext):
     orders = await db.get_users_orders(user_id)
     if not orders:
         await callback.message.answer('У вас нет активных заказов')
+        await callback.answer()
         return
     for order in orders:
         if order['status'] == 'Finished':
