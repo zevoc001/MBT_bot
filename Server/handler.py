@@ -184,6 +184,7 @@ async def my_orders(callback: CallbackQuery, state: FSMContext):
                 [InlineKeyboardButton(text='Отказаться', callback_data=f'cancel_order:{order_id}')]
             ])
             await callback.message.answer(mess, reply_markup=markup)
+    await callback.answer()
 
 
 @router.callback_query(lambda c: c.data.startswith('cancel_order:'))
