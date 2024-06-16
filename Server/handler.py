@@ -78,7 +78,7 @@ async def save_profile(callback: CallbackQuery, state: FSMContext):
 
     # Обработка результата запроса сохранения
     try:
-        user = db.get_user(user_id)
+        user = await db.get_user(user_id)
         menu = await get_menu(user['access'])
         await callback.message.edit_text(text='Ваши данные успешно сохранены', reply_markup=menu)
         await state.clear()
