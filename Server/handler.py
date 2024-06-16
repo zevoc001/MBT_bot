@@ -72,16 +72,17 @@ async def save_profile(callback: CallbackQuery, state: FSMContext):
 
     # Добавление пользователя или обновление данных
     if old_user:
-        new_user = await db.update_user(user=user_data)
+        await db.update_user(user=user_data)
     else:
-        new_user = await db.add_user(user=user_data)
+        await db.add_user(user=user_data)
 
     # Обработка результата запроса сохранения
-    if new_user:
-        menu = await get_menu(new_user['access'])
+    try:
+        user = db.get_user(user_id)
+        menu = await get_menu(user['access'])
         await callback.message.edit_text(text='Ваши данные успешно сохранены', reply_markup=menu)
         await state.clear()
-    else:
+    except:
         markup = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text='Повторить отправку', callback_data='save_profile'),
              InlineKeyboardButton(text='Заполнить заново', callback_data='edit_profile')]
