@@ -178,14 +178,13 @@ async def get_order(callback: CallbackQuery, state: FSMContext):
 async def my_orders(callback: CallbackQuery, state: FSMContext):
     user_id = callback.from_user.id
     orders = await db.get_users_orders(user_id)
-    if not orders:
+    active_orders = filter(lambda order: order['status'] == 'Active', orders)
+    if not active_orders:
         await callback.message.answer('У вас нет активных заказов')
         await callback.answer()
         return
-    for order in orders:
-        if order['status'] == 'Finished':
-            continue
-        else:
+    else:
+        for order in active_orders:
             mess = await utils.create_order_mess_full(**order)
             order_id = order['id']
             markup = InlineKeyboardMarkup(inline_keyboard=[
