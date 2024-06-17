@@ -150,8 +150,11 @@ async def backward(callback: CallbackQuery):
 @router.callback_query(F.data == 'show_orders')
 async def show_orders(callback: CallbackQuery):
     orders = await db.get_orders_all()
-    for order in orders:
-        if order['status'] == 'Active':
+    active_orders = filter(lambda order: order['status'] == 'Active', orders)
+    if active_orders is False:
+        await callback.message.answer('В настоящее время нет доступных заказов')
+    else:
+        for order in active_orders:
             markup = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text='Принять', callback_data=f'get_order_{order["id"]}'), ]
             ])
@@ -176,16 +179,18 @@ async def get_order(callback: CallbackQuery, state: FSMContext):
 async def my_orders(callback: CallbackQuery, state: FSMContext):
     user_id = callback.from_user.id
     orders = await db.get_users_orders(user_id)
-    for order in orders:
-        if order['status'] == 'Finished':
-            continue
-        else:
+    active_orders = filter(lambda order: order['status'] == 'Active', orders)
+    if active_orders is False:
+        await callback.message.answer('В настоящее время у вас нет активных заказов')
+    else:
+        for order in active_orders:
             mess = await utils.create_order_mess_full(**order)
             order_id = order['id']
             markup = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text='Отказаться', callback_data=f'cancel_order:{order_id}')]
             ])
             await callback.message.answer(mess, reply_markup=markup)
+    await callback.answer()
 
 
 @router.callback_query(lambda c: c.data.startswith('cancel_order:'))
@@ -197,6 +202,7 @@ async def my_orders(callback: CallbackQuery):
         await callback.message.answer('Вы отказались от заказа')
     except Exception as e:
         logging.error(e)
+    await callback.answer()
 
 
 @router.callback_query(F.data == 'agree_order')
@@ -222,7 +228,7 @@ async def btn_help(callback: CallbackQuery):
     markup = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text='Главное меню', callback_data='go_main_menu')]
     ])
-    await callback.answer()
     await callback.message.edit_text('Для получения помощи напишите в наш бот: {}'.format(link), reply_markup=markup)
+    await callback.answer()
 
 
