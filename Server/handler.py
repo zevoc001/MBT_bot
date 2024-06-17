@@ -150,8 +150,8 @@ async def backward(callback: CallbackQuery):
 @router.callback_query(F.data == 'show_orders')
 async def show_orders(callback: CallbackQuery):
     orders = await db.get_orders_all()
-    active_orders = filter(lambda order: order['status'] == 'Active', orders)
-    if active_orders is False:
+    active_orders = list(filter(lambda order: order['status'] == 'Active', orders))
+    if not active_orders:
         await callback.message.answer('В настоящее время нет доступных заказов')
     else:
         for order in active_orders:
@@ -179,8 +179,8 @@ async def get_order(callback: CallbackQuery, state: FSMContext):
 async def my_orders(callback: CallbackQuery, state: FSMContext):
     user_id = callback.from_user.id
     orders = await db.get_users_orders(user_id)
-    active_orders = filter(lambda order: order['status'] == 'Active', orders)
-    if active_orders is False:
+    active_orders = list(filter(lambda order: order['status'] == 'Active', orders))
+    if not active_orders:
         await callback.message.answer('В настоящее время у вас нет активных заказов')
     else:
         for order in active_orders:
