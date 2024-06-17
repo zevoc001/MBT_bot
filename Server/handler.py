@@ -9,6 +9,7 @@ from aiogram.fsm.context import FSMContext
 from states import StateUserMenu, StateDeleteUser
 import database as db
 import keyboard, text, config, utils
+from config import CANCEL_HOUR_ORDER
 
 router = Router()
 
@@ -179,7 +180,7 @@ async def get_order(callback: CallbackQuery, state: FSMContext):
 async def my_orders(callback: CallbackQuery, state: FSMContext):
     user_id = callback.from_user.id
     orders = await db.get_users_orders(user_id)
-    active_orders = list(filter(lambda order: order['status'] == 'Active', orders))
+    active_orders = list(filter(lambda order: order['status'] != 'Finished', orders))
     if not active_orders:
         await callback.message.answer('В настоящее время у вас нет активных заказов')
     else:
@@ -197,10 +198,23 @@ async def my_orders(callback: CallbackQuery, state: FSMContext):
 async def my_orders(callback: CallbackQuery):
     user_id = callback.from_user.id
     order_id = int(callback.data.split(':')[1])
+    order = await db.get_order(order_id)
     try:
-        await db.order_remove_worker(order_id, user_id)
-        await callback.message.answer('Вы отказались от заказа')
+        # Разница в днях относительно начала заказа
+        today = datetime.datetime.now()
+        order_date = datetime.date.fromisoformat(order['order_date'])
+        order_start_time = datetime.time.fromisoformat(order['start_time'])
+        order_time = datetime.datetime.combine(order_date, order_start_time)
+        left_hour = (order_time - today).total_seconds() / 3600
+        # Если до начала осталось более дня
+        if left_hour >= CANCEL_HOUR_ORDER:
+            await db.order_remove_worker(order_id, user_id)
+            await callback.message.answer('Вы отказались от заказа')
+        else:
+            await callback.message.answer('Вы не можете отказаться от заказа менее чем за 4 часа до его начала. '
+                                          'Для отказа, звоните по номеру 8(8652)-222-007')
     except Exception as e:
+        await callback.message.answer('Не удалось отказаться от заказа. Пишите в поддержку @stav_job_help_bot')
         logging.error(e)
     await callback.answer()
 

@@ -44,7 +44,7 @@ async def find_user(msg: Message, state: FSMContext):
     await state.set_state(StateFindUser.waiting_choose)
 
 
-@router.callback_query(StateFindUser.waiting_choose, F.data.startswith('user:'))
+@router.callback_query(F.data.startswith('user:'))
 async def choose_user(callback: CallbackQuery, state: FSMContext):
     user_id = int(callback.data.split(':')[1])
     user_data = await db.get_user(user_id)
@@ -69,14 +69,27 @@ async def choose_user(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == 'get_active_orders')
 async def get_active_orders(callback: CallbackQuery):
     orders = await db.get_orders_all()
-    for order in orders:
-        if order['status'] != 'Finished':
-            markup = InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text='Завершить', callback_data=f'finish_order:{order["id"]}'), ]
-            ])
+    active_orders = list(filter(lambda order: order['status'] != 'Finished', orders))
+    if not active_orders:
+        await callback.message.answer('В настоящее время нет активных заказов')
 
-            order_mess = await utils.create_order_mess_full(**order)
-            await callback.message.answer(order_mess, reply_markup=markup)
+    # Отправка заказов
+    for order in active_orders:
+        # Добавление кнопок с рабочими
+        workers = {column.split('_id_')[1]: user_id for column, user_id in order.items() if column.startswith(
+            'worker_telegram_id_')}
+        markup = InlineKeyboardBuilder()
+        for worker_num, worker_id in workers.items():
+            if worker_id is None:
+                continue
+
+            markup.add(InlineKeyboardButton(text=f'Рабочий {worker_num}', callback_data=f'user:{worker_id}'))
+
+        # Отправка заказа
+        markup.adjust(1)
+        markup.add(InlineKeyboardButton(text='Завершить', callback_data=f"finish_order:{order['id']}"))
+        order_mess = await utils.create_order_mess_admin(**order)
+        await callback.message.answer(order_mess, reply_markup=markup.as_markup())
     await callback.answer()
 
 
@@ -114,7 +127,7 @@ async def send_order(callback: CallbackQuery, state: FSMContext):
         'is_feed': order_data['is_feed'],
         'clothes': None,
         'add_info': order_data['add_info'],
-        'break_duration': order_data['break_duration'],
+        'break_time': order_data['break_duration'],
         'task_master': None,
         'worker_telegram_id_1': None,
         'worker_telegram_id_2': None,
@@ -201,15 +214,15 @@ async def set_address(msg: Message, state: FSMContext):
         await state.update_data(company_address=None)
     else:
         await state.update_data(company_address=msg.text)
-    await msg.answer('Введите номер телефона заказчика', reply_markup=ReplyKeyboardRemove())
+    await msg.answer('Введите номер телефона заказчика (8ХХХХХХХХХХ)', reply_markup=ReplyKeyboardRemove())
     await state.set_state(StateRegEmployer.waiting_phone)
 
 
 @router.message(StateRegEmployer.waiting_phone)
 async def set_phone(msg: Message, state: FSMContext):
-    pattern = r'^\+\d{10,15}$'
+    pattern = r'\d{10,15}$'
     if not re.match(pattern, msg.text):
-        await msg.answer('Неверный номер. Введите телефон в соответствии с форматом (+7ХХХХХХХХХХ)',
+        await msg.answer('Неверный номер. Введите телефон в соответствии с форматом (8ХХХХХХХХХХ)',
                          reply_markup=ReplyKeyboardRemove())
     else:
         await state.update_data(phone=msg.text)
