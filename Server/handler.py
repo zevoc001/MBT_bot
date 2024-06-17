@@ -82,7 +82,8 @@ async def save_profile(callback: CallbackQuery, state: FSMContext):
         menu = await get_menu(user['access'])
         await callback.message.edit_text(text='Ваши данные успешно сохранены', reply_markup=menu)
         await state.clear()
-    except:
+    except Exception as e:
+        print(f'Exception in "save_user": {e}')
         markup = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text='Повторить отправку', callback_data='save_profile'),
              InlineKeyboardButton(text='Заполнить заново', callback_data='edit_profile')]
@@ -149,16 +150,13 @@ async def backward(callback: CallbackQuery):
 @router.callback_query(F.data == 'show_orders')
 async def show_orders(callback: CallbackQuery):
     orders = await db.get_orders_all()
-    active_orders = list(filter(lambda order: order['status'] == 'Active', orders))
-    if not active_orders:
-        await callback.message.answer('В настоящий момент нет доступных заказов')
-        return
-    for order in active_orders:
-        markup = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text='Принять', callback_data=f'get_order_{order["id"]}'), ]
-        ])
-        order_mess = await utils.create_order_mess_full(**order)
-        await callback.message.answer(order_mess, reply_markup=markup)
+    for order in orders:
+        if order['status'] == 'Active':
+            markup = InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text='Принять', callback_data=f'get_order_{order["id"]}'), ]
+            ])
+            order_mess = await utils.create_order_mess_full(**order)
+            await callback.message.answer(order_mess, reply_markup=markup)
     await callback.answer()
 
 
@@ -178,20 +176,16 @@ async def get_order(callback: CallbackQuery, state: FSMContext):
 async def my_orders(callback: CallbackQuery, state: FSMContext):
     user_id = callback.from_user.id
     orders = await db.get_users_orders(user_id)
-    active_orders = filter(lambda order: order['status'] == 'Active', orders)
-    if not active_orders:
-        await callback.message.answer('У вас нет активных заказов')
-        await callback.answer()
-        return
-    else:
-        for order in active_orders:
+    for order in orders:
+        if order['status'] == 'Finished':
+            continue
+        else:
             mess = await utils.create_order_mess_full(**order)
             order_id = order['id']
             markup = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text='Отказаться', callback_data=f'cancel_order:{order_id}')]
             ])
             await callback.message.answer(mess, reply_markup=markup)
-    await callback.answer()
 
 
 @router.callback_query(lambda c: c.data.startswith('cancel_order:'))
@@ -202,7 +196,6 @@ async def my_orders(callback: CallbackQuery):
         await db.order_remove_worker(order_id, user_id)
         await callback.message.answer('Вы отказались от заказа')
     except Exception as e:
-        await callback.message.answer('Ошибка. Обратитесь в поддержку')
         logging.error(e)
 
 
