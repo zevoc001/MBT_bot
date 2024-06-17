@@ -6,10 +6,9 @@ from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, C
 from states import StateReg
 from aiogram.fsm.context import FSMContext
 from text import profile_data
-import logging
+from logger_config import get_logger
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+logger = get_logger(__name__)
 
 router = Router()
 

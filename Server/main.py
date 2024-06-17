@@ -1,5 +1,5 @@
 import asyncio
-import logging
+from logger_config import get_logger
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -11,6 +11,8 @@ from orders import router as order_router
 from menu_admin import router as admin_router
 
 from middleware import AccessMiddleware
+
+logger = get_logger(__name__)
 
 
 async def main():
@@ -28,8 +30,8 @@ async def main():
     await dp.start_polling(bot)
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
+    logger.warning('Server runs')
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print('Shutdown')
+        logger.warning('Server stops')

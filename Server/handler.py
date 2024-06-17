@@ -1,5 +1,5 @@
 import datetime
-import logging
+from logger_config import get_logger
 
 from aiogram import Router, F
 from aiogram.filters import Command
@@ -10,6 +10,8 @@ from states import StateUserMenu, StateDeleteUser
 import database as db
 import keyboard, text, config, utils
 from config import CANCEL_HOUR_ORDER
+
+logger = get_logger(__name__)
 
 router = Router()
 
@@ -74,17 +76,19 @@ async def save_profile(callback: CallbackQuery, state: FSMContext):
     # Добавление пользователя или обновление данных
     if old_user:
         await db.update_user(user=user_data)
+        logger.info('User update profile')
     else:
         await db.add_user(user=user_data)
+        logger.info('Registered wew user')
 
     # Обработка результата запроса сохранения
     try:
         user = await db.get_user(user_id)
         menu = await get_menu(user['access'])
-        await callback.message.edit_text(text='Ваши данные успешно сохранены', reply_markup=menu)
+        await callback.message.edit_text(text='Ваши данные успешно сохранены.\n\nПодписывайтесь на нас в соцсетях.\nVK: https://vk.com/id849751646\n', reply_markup=menu)
         await state.clear()
     except Exception as e:
-        print(f'Exception in "save_user": {e}')
+        logger.warning(f"User can't save profile. Error: {e}")
         markup = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text='Повторить отправку', callback_data='save_profile'),
              InlineKeyboardButton(text='Заполнить заново', callback_data='edit_profile')]
@@ -105,10 +109,12 @@ async def save_employer(callback: CallbackQuery, state: FSMContext):
     # Обработка результата запроса сохранения
     if result:
         menu = keyboard.main_menu_admin
+        logger.info('Employer added')
         await callback.message.answer(text='Пользователь успешно добавлен')
         await callback.message.edit_text(text='Главное меню', reply_markup=menu)
         await state.clear()
     else:
+        logger.warning(" Error. Employer can't added.")
         markup = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text='Повторить отправку', callback_data='save_profile'),
              InlineKeyboardButton(text='Заполнить заново', callback_data='edit_profile')]
@@ -131,6 +137,7 @@ async def waiting_delete_text(msg: Message, state: FSMContext):
     if msg.text == 'УДАЛИТЬ АККАУНТ':
         await db.delete_user(msg.from_user.id)
         await msg.answer('Ваш аккаунт удален', reply_markup=ReplyKeyboardRemove())
+        logger.info('User delete profile')
         await state.clear()
     else:
         await msg.answer(text='Неверный ввод. Удаление отменено')
@@ -150,6 +157,7 @@ async def backward(callback: CallbackQuery):
 
 @router.callback_query(F.data == 'show_orders')
 async def show_orders(callback: CallbackQuery):
+    logger.info('Check orders')
     orders = await db.get_orders_all()
     active_orders = list(filter(lambda order: order['status'] == 'Active', orders))
     if not active_orders:
@@ -208,6 +216,7 @@ async def my_orders(callback: CallbackQuery):
         left_hour = (order_time - today).total_seconds() / 3600
         # Если до начала осталось более дня
         if left_hour >= CANCEL_HOUR_ORDER:
+            logger.info('User have cancel order')
             await db.order_remove_worker(order_id, user_id)
             await callback.message.answer('Вы отказались от заказа')
         else:
@@ -215,7 +224,7 @@ async def my_orders(callback: CallbackQuery):
                                           'Для отказа, звоните по номеру 8(8652)-222-007')
     except Exception as e:
         await callback.message.answer('Не удалось отказаться от заказа. Пишите в поддержку @stav_job_help_bot')
-        logging.error(e)
+        logger.warning(f"User can't cancel order. Error: {e}")
     await callback.answer()
 
 
@@ -227,6 +236,7 @@ async def agree_order(callback: CallbackQuery, state: FSMContext):
     try:
         await db.order_add_worker(order_id, worker_id)
         await callback.message.answer('Вы приняли заказ. В положенное время ждем вас на месте')
+        logger.info(f'User take order {order_id}')
         await state.set_data({})
     except KeyError:
         await callback.message.answer('Вы уже взяли этот заказ')
