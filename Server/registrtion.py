@@ -22,7 +22,7 @@ async def start_reg(callback: CallbackQuery, state: FSMContext):
 
 @router.message(StateReg.name)
 async def set_name(msg: Message, state: FSMContext):
-    pattern = r'^[А-ЯЁа-яё]+ [А-ЯЁа-яё]+ [А-ЯЁа-яё]+$'
+    pattern = r'^[А-ЯЁа-яё]+(-[А-ЯЁа-яё]+)? [А-ЯЁа-яё]+(-[А-ЯЁа-яё]+)? [А-ЯЁа-яё]+(-[А-ЯЁа-яё]+)?$'
     if not re.match(pattern, msg.text):
         await msg.answer('Некорректный ввод, попробуйте ввести иначе')
     else:

@@ -11,7 +11,7 @@ if not os.path.exists(log_dir):
 log_file = os.path.join(log_dir, 'app.log')
 
 # Настраиваем обработчик для ротации логов ежедневно
-handler = TimedRotatingFileHandler(log_file, when='midnight', interval=1, backupCount=7)
+handler = TimedRotatingFileHandler(log_file, when='midnight', interval=1, backupCount=30)
 handler.suffix = "%Y-%m-%d"  # Суффикс для файлов логов
 
 # Настраиваем форматер

@@ -59,11 +59,19 @@ async def choose_user(callback: CallbackQuery, state: FSMContext):
                 value = 'Нет'
             msg += '\n{0}: {1}'.format(column, value)
     markup = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text='Главное меню', callback_data='go_main_menu')]
+        [InlineKeyboardButton(text='Главное меню', callback_data='go_main_menu'),
+         InlineKeyboardButton(text='Заблокировать', callback_data=f'block_user:{user_id}')]
     ])
     await callback.answer()
     await callback.message.edit_text(text=msg, reply_markup=markup)
     await state.clear()
+
+
+@router.callback_query(F.data.startswith('block_user:'))
+async def block_user(callback: CallbackQuery):
+    user_id = int(callback.data.split(':')[1])
+    user = await db.get_user(user_id)
+    user['status'] == 'Blocked'
 
 
 @router.callback_query(F.data == 'get_active_orders')
