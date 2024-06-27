@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv('../config.env')
+
 # Токен бота Телеграм
 TOKEN = os.getenv('TOKEN')
 

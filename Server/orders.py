@@ -121,7 +121,7 @@ async def waiting_price_full(msg: Message, state: FSMContext):
         if msg.text == 'Пропустить':
             await state.update_data(price_full=None)
         else:
-            await state.update_data(price_full=msg.text)
+            await state.update_data(price_full=int(msg.text))
 
         # Отправка сообщения
         await msg.answer('Введите стоимость за час работы (без единиц измерения, в рублях, на одного человека)',
@@ -137,7 +137,7 @@ async def waiting_price_hour(msg: Message, state: FSMContext):
         if msg.text == 'Пропустить':
             await state.update_data(price_hour=None)
         else:
-            await state.update_data(price_hour=msg.text)
+            await state.update_data(price_hour=int(msg.text))
 
         # Отправка сообщения
         markup = ReplyKeyboardMarkup(keyboard=[
@@ -289,7 +289,7 @@ async def waiting_break_duration(msg: Message, state: FSMContext):
     if not msg.text.isdigit():
         await msg.answer('Неверный ввод. Введите только число, без дополнительных обозначений')
     else:
-        await state.update_data(break_duration=int(msg.text))
+        await state.update_data(break_time=int(msg.text))
         await msg.answer('Введите дополнительную информацию', reply_markup=pass_markup)
         await state.set_state(StateCreateOrder.waiting_add_info)
 

@@ -1,5 +1,6 @@
 from jinja2 import FileSystemLoader, Environment
 from datetime import date
+import datetime
 
 
 def time_is_valid(time: str):
@@ -34,7 +35,6 @@ async def create_order_mess_admin(**kwargs) -> str:
         kwargs['finish_time'] = kwargs['finish_time'][:5]
         kwargs['leave_time'] = kwargs['leave_time'][:5]
         kwargs['finish_time'] = kwargs['finish_time'][:5]
-        kwargs['back_time'] = kwargs['back_time'][:5]
         kwargs['tasks'] = kwargs['tasks'].split(', ')
         kwargs['order_date'] = date.fromisoformat(kwargs['order_date'])
         kwargs['order_date'] = kwargs['order_date'].strftime('%d.%m.%Y')

@@ -135,7 +135,7 @@ async def send_order(callback: CallbackQuery, state: FSMContext):
         'is_feed': order_data['is_feed'],
         'clothes': None,
         'add_info': order_data['add_info'],
-        'break_time': order_data['break_duration'],
+        'break_time': order_data['break_time'],
         'task_master': None,
         'worker_telegram_id_1': None,
         'worker_telegram_id_2': None,
@@ -166,7 +166,7 @@ async def send_order(callback: CallbackQuery, state: FSMContext):
             await callback.bot.send_message(chat_id=user_id, text=mess)
         await state.clear()
     except Exception as e:
-        logging.error('Не удалось сохранить сообщение ')
+        logging.error(f'Не удалось сохранить сообщение: {e}')
         markup = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text='Повторить отправку', callback_data='send_order'),
              InlineKeyboardButton(text='Заполнить заново', callback_data='btn_create_order')]
