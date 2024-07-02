@@ -5,10 +5,11 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
 import config
-from handler import router as main_router
-from registrtion import router as reg_router
-from orders import router as order_router
-from menu_admin import router as admin_router
+from handlers.handlers import router as main_router
+from handlers.registrtion import router as reg_router
+from handlers.orders import router as order_router
+from handlers.menu_admin import router as admin_router
+
 
 from middleware import AccessMiddleware
 
@@ -30,8 +31,8 @@ async def main():
     await dp.start_polling(bot)
 
 if __name__ == '__main__':
-    logger.warning('Server runs')
+    logger.warning('App runs')
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        logger.warning('Server stops')
+        logger.warning('App stops')
