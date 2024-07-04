@@ -3,10 +3,10 @@ import re
 from aiogram import Router
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ReplyKeyboardMarkup, \
     KeyboardButton, ReplyKeyboardRemove
-from states import StateReg
+from App.states import UserRegistration as StateReg
 from aiogram.fsm.context import FSMContext
-from text import profile_data
-from logger_config import get_logger
+from App.text import profile_data
+from App.logger_config import get_logger
 
 logger = get_logger(__name__)
 

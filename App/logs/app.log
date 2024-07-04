@@ -1,0 +1,31 @@
+2024-07-04 17:35:51,596 - __main__ - WARNING - App runs
+2024-07-04 17:36:37,706 - middleware - ERROR - Не удалось получить права пользователя. Ошибка: 'bool' object is not subscriptable
+2024-07-04 17:36:37,706 - middleware - ERROR - Ошибка при проверке прав доступа: 'bool' object is not subscriptable
+2024-07-04 17:56:28,752 - __main__ - WARNING - App stops
+2024-07-04 17:56:33,275 - __main__ - WARNING - App runs
+2024-07-04 17:57:53,256 - __main__ - WARNING - App stops
+2024-07-04 17:57:57,470 - __main__ - WARNING - App runs
+2024-07-04 17:58:46,992 - App.database - WARNING - Не удалось получить пользователя: Failed to fetch data from http://127.0.0.1:8000/api/users/1383046637. Status code: 500
+2024-07-04 18:00:13,214 - __main__ - WARNING - App stops
+2024-07-04 18:00:17,867 - __main__ - WARNING - App runs
+2024-07-04 18:01:41,893 - __main__ - WARNING - App stops
+2024-07-04 18:01:46,166 - __main__ - WARNING - App runs
+2024-07-04 18:04:15,478 - __main__ - WARNING - App stops
+2024-07-04 18:04:20,022 - __main__ - WARNING - App runs
+2024-07-04 18:05:13,070 - __main__ - WARNING - App stops
+2024-07-04 18:05:17,572 - __main__ - WARNING - App runs
+2024-07-04 18:06:13,831 - __main__ - WARNING - App stops
+2024-07-04 18:06:18,148 - __main__ - WARNING - App runs
+2024-07-04 18:06:40,430 - __main__ - WARNING - App stops
+2024-07-04 18:06:44,534 - __main__ - WARNING - App runs
+2024-07-04 18:07:46,564 - __main__ - WARNING - App stops
+2024-07-04 18:07:50,890 - __main__ - WARNING - App runs
+2024-07-04 18:08:37,853 - __main__ - WARNING - App stops
+2024-07-04 18:08:42,046 - __main__ - WARNING - App runs
+2024-07-04 18:09:25,861 - __main__ - WARNING - App stops
+2024-07-04 18:09:30,530 - __main__ - WARNING - App runs
+2024-07-04 18:11:44,386 - __main__ - WARNING - App stops
+2024-07-04 18:11:48,819 - __main__ - WARNING - App runs
+2024-07-04 18:12:34,202 - __main__ - WARNING - App stops
+2024-07-04 18:12:38,445 - __main__ - WARNING - App runs
+2024-07-04 18:14:58,887 - __main__ - WARNING - App stops

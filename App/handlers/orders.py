@@ -7,9 +7,9 @@ from aiogram.types import (CallbackQuery, Message, InlineKeyboardMarkup, InlineK
                            KeyboardButton, ReplyKeyboardRemove)
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from database import get_employers_by_name
-from states import StateCreateOrder, StateRegEmployer
-from utils import time_is_valid, create_order_mess_full
+from App.database import get_employers_by_name
+from App.states import CreatingOrder as StateCreateOrder
+from App.utils import time_is_valid, create_order_mess_full
 
 router = Router()
 
@@ -17,11 +17,6 @@ router = Router()
 pass_markup = ReplyKeyboardMarkup(keyboard=[
     [KeyboardButton(text='Пропустить')]
 ], resize_keyboard=True)
-
-
-@router.callback_query(F.data == 'show_orders')
-async def show_orders(callback: CallbackQuery, state: FSMContext):
-    pass
 
 
 @router.callback_query(StateCreateOrder.waiting_employer, F.data == 'find_employer')

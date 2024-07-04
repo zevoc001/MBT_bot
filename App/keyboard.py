@@ -11,27 +11,28 @@ admin_menu_main = InlineKeyboardMarkup(inline_keyboard=[
 # Рабочие
 admin_menu_workers = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='🔍Найти', callback_data='go_menu_find_users'),],
-    [InlineKeyboardButton(text='🔙Назад', callback_data='go_menu_main'),]
+    [InlineKeyboardButton(text='🔙Назад', callback_data='go_menu_admin'),]
 ])
 
 # Работодатели
 admin_menu_customers = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='🔍Найти', callback_data='go_menu_find_customers'),
      InlineKeyboardButton(text='➕Добавить', callback_data='add_customer'),],
-    [InlineKeyboardButton(text='🔙Назад', callback_data='go_menu_main'),]
+    [InlineKeyboardButton(text='🔙Назад', callback_data='go_menu_admin'),]
 ])
 
 # Заказы
 admin_menu_orders = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='🔍Найти', callback_data='go_menu_find_orders'),
      InlineKeyboardButton(text='➕Создать', callback_data='add_order'),],
-    [InlineKeyboardButton(text='🔙Назад', callback_data='go_menu_main'),]
+    [InlineKeyboardButton(text='➕Активные заказы', callback_data='show_active_orders'),],
+    [InlineKeyboardButton(text='🔙Назад', callback_data='go_menu_admin'),]
 ])
 
 # Другое
 admin_menu_others = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='✉️ Отправить сообщение', callback_data='send_mess_to_all')],
-    [InlineKeyboardButton(text='🔙 Назад', callback_data='go_menu_main')]
+    [InlineKeyboardButton(text='🔙 Назад', callback_data='go_menu_admin')]
 ])
 
 # Рабочие -> Найти
@@ -39,9 +40,8 @@ admin_menu_find_users = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='👤ФИО', callback_data='find_users_by_name'),
      InlineKeyboardButton(text='🚻Пол', callback_data='find_users_by_sex'),],
     [InlineKeyboardButton(text='🎂Возраст', callback_data='find_users_by_age'),
-     InlineKeyboardButton(text='📞Телефон', callback_data='find_users_by_phone'),
-     InlineKeyboardButton(text='🏢Должность', callback_data='find_users_by_access'),],
-    [InlineKeyboardButton(text='🔙Назад', callback_data='go_users_menu'),]
+     InlineKeyboardButton(text='📞Телефон', callback_data='find_users_by_phone'),],
+    [InlineKeyboardButton(text='🔙Назад', callback_data='go_workers_menu'),]
 ])
 
 # Работодатели -> Найти

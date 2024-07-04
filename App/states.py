@@ -1,7 +1,7 @@
 from aiogram.fsm.state import StatesGroup, State
 
 
-class StateReg(StatesGroup):
+class UserRegistration(StatesGroup):
     name = State()
     sex = State()
     born = State()
@@ -28,19 +28,11 @@ class StateReg(StatesGroup):
     save = State()
 
 
-class StateUserMenu(StatesGroup):
-    main = State()
-    profile = State()
-    my_orders = State()
-    all_orders = State()
-    help = State()
-
-
-class StateMsg(StatesGroup):
+class SendingMessage(StatesGroup):
     waiting_msg = State()
 
 
-class StateCreateOrder(StatesGroup):
+class CreatingOrder(StatesGroup):
     waiting_employer = State()
     waiting_choose = State()
     waiting_date_order = State()
@@ -65,16 +57,16 @@ class StateCreateOrder(StatesGroup):
     waiting_break_duration = State()
 
 
-class StateFindUser(StatesGroup):
+class FindingUser(StatesGroup):
     waiting_msg = State()
     waiting_choose = State()
 
 
-class StateDeleteUser(StatesGroup):
+class DeletingUser(StatesGroup):
     waiting_delete_text = State()
 
 
-class StateRegEmployer(StatesGroup):
+class AddingEmployer(StatesGroup):
     waiting_name = State()
     waiting_company = State()
     waiting_address = State()

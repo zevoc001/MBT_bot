@@ -265,7 +265,7 @@ async def set_comment(msg: Message, state: FSMContext):
     await msg.answer(mess, reply_markup=markup)
 
 
-@router.callback_query(F.data == 'create_order')
+@router.callback_query(F.data == 'add_order')
 async def create_offer(callback: CallbackQuery, state: FSMContext):
     await state.set_data({})
     markup = InlineKeyboardMarkup(inline_keyboard=[

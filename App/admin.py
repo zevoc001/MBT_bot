@@ -4,5 +4,5 @@ admin_command = [
     'send_order',
     'send_mess',
     'add_employer',
-    'find_employer'
+    'find_employer',
 ]

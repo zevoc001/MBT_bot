@@ -3,7 +3,7 @@ from logging.handlers import TimedRotatingFileHandler
 import os
 
 # Создаем директорию для логов, если она не существует
-log_dir = 'logs'
+log_dir = 'App/logs'
 if not os.path.exists(log_dir):
     os.makedirs(log_dir)
 
