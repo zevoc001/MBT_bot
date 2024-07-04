@@ -4,13 +4,12 @@ from App.logger_config import get_logger
 from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ReplyKeyboardRemove
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from App import states
 from App import database as db
 from App import keyboard, text, config, utils
-from App.config import CANCEL_HOUR_ORDER
 
 
 logger = get_logger(__name__)
@@ -45,7 +44,7 @@ async def start(msg: Message):
 
 
 @router.callback_query(F.data == 'help')
-async def help(callback: CallbackQuery):
+async def go_help(callback: CallbackQuery):
     link = config.HELP_BOT_LINK
     markup = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text='Главное меню', callback_data='go_main_menu')]
@@ -247,7 +246,7 @@ async def block_user(callback: CallbackQuery):
 @router.callback_query(F.data == 'show_active_orders')
 async def get_active_orders(callback: CallbackQuery):
     orders = await db.get_orders_all()
-    active_orders = list(filter(lambda order: order['status'] != 'Finished', orders))
+    active_orders = list(filter(lambda order_data: order_data['status'] != 'Finished', orders))
     if not active_orders:
         await callback.message.answer('В настоящее время нет активных заказов')
 

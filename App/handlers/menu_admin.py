@@ -67,13 +67,6 @@ async def choose_user(callback: CallbackQuery, state: FSMContext):
     await state.clear()
 
 
-@router.callback_query(F.data.startswith('block_user:'))
-async def block_user(callback: CallbackQuery):
-    user_id = int(callback.data.split(':')[1])
-    user = await db.get_user(user_id)
-    user['status'] == 'Blocked'
-
-
 @router.callback_query(F.data == 'get_active_orders')
 async def get_active_orders(callback: CallbackQuery):
     orders = await db.get_orders_all()

@@ -64,7 +64,7 @@ async def waiting_tasks(msg: Message, state: FSMContext):
             await msg.answer('Введите список задач, которые необходимо будет выполнять, через запятую',
                              reply_markup=ReplyKeyboardRemove())
             await state.set_state(StateCreateOrder.waiting_tasks)
-        except Exception:
+        except Exception as e:
             await msg.answer('Некорректная дата, проверьте ее правильность')
 
 
