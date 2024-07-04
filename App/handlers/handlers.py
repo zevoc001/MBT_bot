@@ -336,7 +336,7 @@ async def send_order(callback: CallbackQuery, state: FSMContext):
 
     # Обработка результата запроса сохранения
     await callback.message.edit_text(text='Заказ успешно опубликован')
-    await callback.message.answer(text='Главное меню', reply_markup=keyboard.main_menu_admin)
+    await go_main_menu
     await state.clear()
     try:
         # Отправка сообщения
