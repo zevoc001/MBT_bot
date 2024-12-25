@@ -6,11 +6,11 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from App import states
-from App import database as db
-from App import keyboard, config, utils
-from App.database import UserNotFound
-from App.config import CANCEL_HOUR_ORDER
+import states
+import database as db
+import keyboard, config, utils
+from database import UserNotFound
+from config import CANCEL_HOUR_ORDER
 
 
 router = Router()

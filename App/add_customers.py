@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import (Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ReplyKeyboardRemove,
                            ReplyKeyboardMarkup, KeyboardButton)
 
-from App import states
+import states
 
 
 router = Router()

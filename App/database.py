@@ -1,17 +1,13 @@
 import datetime
 import json
-import os
 from datetime import date
 from typing import Optional
 
 import aiohttp
 from pydantic import BaseModel
 
-from App.logger_config import get_logger
 from config import DB_URL, DB_ACCESS_TOKEN
 from dateutil.relativedelta import relativedelta
-
-logger = get_logger(__name__)
 
 
 class PageNotFound(BaseException):
@@ -243,7 +239,7 @@ async def get_user(user_id: int) -> dict:
         result = await get_data(url)
         return result
     except PageNotFound:
-        raise UserNotFound(f'Не удалось получить пользователя: {e}')
+        raise UserNotFound(f'Не удалось получить пользователя: ')
     except Exception as e:
         logger.warning(f'Не удалось получить пользователя: {e}')
         raise e

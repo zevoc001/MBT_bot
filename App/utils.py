@@ -1,9 +1,5 @@
 from jinja2 import FileSystemLoader, Environment, TemplateNotFound
 from datetime import date
-import datetime
-from logger_config import get_logger
-
-logger = get_logger(__name__)
 
 
 def time_is_valid(time: str):
@@ -48,10 +44,8 @@ async def create_order_mess_admin(**kwargs) -> str:
         msg = template.render(data)
         return msg
     except TemplateNotFound as e:
-        logger.error(f'Не удалось загрузить шаблон: {e}')
         raise e
     except Exception as e:
-        logger.error(f'Ошибка рендеринга сообщения: {e}')
         raise Exception(f'Ошибка рендеринга сообщения: {e}')
 
 
@@ -82,8 +76,6 @@ async def create_profile_mess(kwargs: dict) -> str:
         return msg
 
     except TemplateNotFound as e:
-        logger.error(f'Не удалось загрузить шаблон: {e}')
         raise e
     except Exception as e:
-        logger.error(f'Ошибка рендеринга сообщения: {e}')
         raise Exception(f'Ошибка рендеринга сообщения: {e}')
