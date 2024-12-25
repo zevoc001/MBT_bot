@@ -1,0 +1,61 @@
+2024-07-08 09:41:45,947 - database - WARNING - Не удалось получить пользователя: Failed to fetch data from http://127.0.0.1:8000/api/users/1383046637. Status code: 500
+2024-07-08 09:41:45,951 - middleware - ERROR - Не удалось получить права пользователя: Failed to fetch data from http://127.0.0.1:8000/api/users/1383046637. Status code: 500
+2024-07-08 09:41:45,951 - middleware - ERROR - Не удалось получить права пользователя: Failed to fetch data from http://127.0.0.1:8000/api/users/1383046637. Status code: 500
+2024-07-08 09:41:45,993 - App.database - WARNING - Не удалось получить пользователя: Failed to fetch data from http://127.0.0.1:8000/api/users/1383046637. Status code: 500
+2024-07-08 09:43:10,227 - __main__ - WARNING - App runs
+2024-07-08 09:59:39,734 - __main__ - WARNING - App stops
+2024-07-08 09:59:44,007 - __main__ - WARNING - App runs
+2024-07-08 10:02:04,427 - __main__ - WARNING - App stops
+2024-07-08 10:02:08,804 - __main__ - WARNING - App runs
+2024-07-08 10:04:04,396 - __main__ - WARNING - App stops
+2024-07-08 10:04:08,620 - __main__ - WARNING - App runs
+2024-07-08 10:06:38,654 - __main__ - WARNING - App stops
+2024-07-08 10:06:42,752 - __main__ - WARNING - App runs
+2024-07-08 10:08:07,668 - __main__ - WARNING - App stops
+2024-07-08 10:08:11,738 - __main__ - WARNING - App runs
+2024-07-08 10:24:30,966 - __main__ - WARNING - App stops
+2024-07-08 10:24:35,255 - __main__ - WARNING - App runs
+2024-07-08 10:32:38,283 - __main__ - WARNING - App stops
+2024-07-08 10:32:42,642 - __main__ - WARNING - App runs
+2024-07-08 10:32:50,001 - App.database - WARNING - Не удалось получить пользователя: Error during HTTP request: Cannot connect to host 127.0.0.1:8000 ssl:default [Удаленный компьютер отклонил это сетевое подключение]
+2024-07-08 10:34:33,000 - __main__ - WARNING - App stops
+2024-07-08 10:34:37,112 - __main__ - WARNING - App runs
+2024-07-08 10:37:41,994 - __main__ - WARNING - App stops
+2024-07-08 10:38:11,824 - __main__ - WARNING - App runs
+2024-07-08 10:39:40,507 - __main__ - WARNING - App stops
+2024-07-08 10:39:44,766 - __main__ - WARNING - App runs
+2024-07-08 10:39:55,314 - __main__ - WARNING - App stops
+2024-07-08 10:39:59,493 - __main__ - WARNING - App runs
+2024-07-08 10:46:33,374 - __main__ - WARNING - App stops
+2024-07-08 10:46:37,703 - __main__ - WARNING - App runs
+2024-07-08 10:46:44,883 - App.utils - ERROR - Ошибка рендеринга сообщения: 'wallet_end' is undefined
+2024-07-08 10:47:19,761 - __main__ - WARNING - App stops
+2024-07-08 10:47:23,824 - __main__ - WARNING - App runs
+2024-07-08 10:47:47,058 - __main__ - WARNING - App stops
+2024-07-08 10:47:51,199 - __main__ - WARNING - App runs
+2024-07-08 10:50:09,611 - __main__ - WARNING - App stops
+2024-07-08 10:50:14,028 - __main__ - WARNING - App runs
+2024-07-08 10:54:43,889 - __main__ - WARNING - App stops
+2024-07-08 10:54:48,222 - __main__ - WARNING - App runs
+2024-07-08 11:00:05,671 - __main__ - WARNING - App stops
+2024-07-08 11:00:09,873 - __main__ - WARNING - App runs
+2024-07-08 11:00:20,374 - __main__ - WARNING - App stops
+2024-07-08 11:00:24,357 - __main__ - WARNING - App runs
+2024-07-08 11:00:48,103 - database - WARNING - Не удалось получить пользователя: Failed to fetch data from http://127.0.0.1:8000/api/users/1383046637. Status code: 500
+2024-07-08 11:00:48,104 - middleware - ERROR - Не удалось получить права пользователя: Failed to fetch data from http://127.0.0.1:8000/api/users/1383046637. Status code: 500
+2024-07-08 11:00:48,104 - middleware - ERROR - Не удалось получить права пользователя: Failed to fetch data from http://127.0.0.1:8000/api/users/1383046637. Status code: 500
+2024-07-08 11:00:48,176 - App.database - WARNING - Не удалось получить пользователя: Error during HTTP request: Server disconnected
+2024-07-08 11:03:25,632 - __main__ - WARNING - App stops
+2024-07-08 11:03:29,926 - __main__ - WARNING - App runs
+2024-07-08 11:03:57,834 - __main__ - WARNING - App stops
+2024-07-08 11:04:01,943 - __main__ - WARNING - App runs
+2024-07-08 11:06:22,383 - __main__ - WARNING - App stops
+2024-07-08 11:06:26,636 - __main__ - WARNING - App runs
+2024-07-08 11:09:41,267 - __main__ - WARNING - App stops
+2024-07-08 11:09:45,405 - __main__ - WARNING - App runs
+2024-07-08 11:10:56,183 - __main__ - WARNING - App stops
+2024-07-08 11:11:00,428 - __main__ - WARNING - App runs
+2024-07-08 11:13:54,154 - __main__ - WARNING - App stops
+2024-07-08 11:13:58,287 - __main__ - WARNING - App runs
+2024-07-08 11:15:00,146 - __main__ - WARNING - App stops
+2024-07-08 11:15:50,298 - __main__ - WARNING - App runs

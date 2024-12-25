@@ -1,15 +1,15 @@
 import datetime
-from logger_config import get_logger
+from App.logger_config import get_logger
 
 from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ReplyKeyboardRemove
 from aiogram.fsm.context import FSMContext
 
-from states import StateUserMenu, StateDeleteUser
-import database as db
-import keyboard, text, config, utils
-from config import CANCEL_HOUR_ORDER
+from App.states import StateUserMenu, StateDeleteUser
+from App import database as db
+from App import keyboard, text, config, utils
+from App.config import CANCEL_HOUR_ORDER
 
 logger = get_logger(__name__)
 
@@ -26,25 +26,6 @@ async def get_menu(access: str) -> InlineKeyboardMarkup:
     else:
         menu = keyboard.main_menu_user
     return menu
-
-
-@router.message(Command('start'))
-@router.message(Command('menu'))
-async def start_handler(msg: Message, state: FSMContext):
-    user = await db.get_user(msg.from_user.id)
-    if not user:  # Пользователь не существует
-        menu = [
-            [InlineKeyboardButton(text='Приступим', callback_data='reg')]
-        ]
-        menu = InlineKeyboardMarkup(inline_keyboard=menu)
-        await msg.answer(
-            text='Здравствуйте, это Молодежная Биржа Труда. Мы помогаем людям найти работу и подработку. \n\nДавайте '
-                 'немного познакомимся и заполним анкету.',
-            reply_markup=menu)
-    else:  # Пользователь не существует
-        menu = await get_menu(user['access'])
-        await msg.answer('Меню', reply_markup=menu)
-        await state.set_state(StateUserMenu.main)
 
 
 @router.callback_query(F.data == 'profile')

@@ -67,13 +67,6 @@ async def choose_user(callback: CallbackQuery, state: FSMContext):
     await state.clear()
 
 
-@router.callback_query(F.data.startswith('block_user:'))
-async def block_user(callback: CallbackQuery):
-    user_id = int(callback.data.split(':')[1])
-    user = await db.get_user(user_id)
-    user['status'] == 'Blocked'
-
-
 @router.callback_query(F.data == 'get_active_orders')
 async def get_active_orders(callback: CallbackQuery):
     orders = await db.get_orders_all()
@@ -135,7 +128,7 @@ async def send_order(callback: CallbackQuery, state: FSMContext):
         'is_feed': order_data['is_feed'],
         'clothes': None,
         'add_info': order_data['add_info'],
-        'break_time': order_data['break_duration'],
+        'break_time': order_data['break_time'],
         'task_master': None,
         'worker_telegram_id_1': None,
         'worker_telegram_id_2': None,
@@ -166,7 +159,7 @@ async def send_order(callback: CallbackQuery, state: FSMContext):
             await callback.bot.send_message(chat_id=user_id, text=mess)
         await state.clear()
     except Exception as e:
-        logging.error('Не удалось сохранить сообщение ')
+        logging.error(f'Не удалось сохранить сообщение: {e}')
         markup = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text='Повторить отправку', callback_data='send_order'),
              InlineKeyboardButton(text='Заполнить заново', callback_data='btn_create_order')]
@@ -265,7 +258,7 @@ async def set_comment(msg: Message, state: FSMContext):
     await msg.answer(mess, reply_markup=markup)
 
 
-@router.callback_query(F.data == 'create_order')
+@router.callback_query(F.data == 'add_order')
 async def create_offer(callback: CallbackQuery, state: FSMContext):
     await state.set_data({})
     markup = InlineKeyboardMarkup(inline_keyboard=[
