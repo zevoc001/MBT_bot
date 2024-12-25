@@ -5,8 +5,8 @@ from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, C
     KeyboardButton, ReplyKeyboardRemove
 from App.states import UserRegistration as StateReg
 from aiogram.fsm.context import FSMContext
-from App.text import profile_data
 from App.logger_config import get_logger
+from App.utils import create_profile_mess
 
 logger = get_logger(__name__)
 
@@ -50,139 +50,27 @@ async def set_born(msg: Message, state: FSMContext):
             date = msg.text.split('.')
             born = datetime.date(int(date[2]), int(date[1]), int(date[0])).isoformat()
             await state.update_data(born_date=born)
-            await state.set_state(StateReg.residence)
+            await state.set_state(StateReg.skills)
             markup = ReplyKeyboardMarkup(keyboard=[
                 [KeyboardButton(text='Пропустить')],
             ], resize_keyboard=True)
-            await msg.answer('Введите место жительства', reply_markup=markup)
+            await msg.answer('Какими навыками вы обладаете? (работа с бетоном, покраска стен и т.д.)',
+                             reply_markup=markup)
         except ValueError:
             await msg.answer('Некорректный ввод, попробуйте ввести иначе')
 
 
-@router.message(StateReg.residence)
-async def set_residence(msg: Message, state: FSMContext):
-    if msg.text != 'Пропустить':
-        await state.update_data(residence=msg.text)
-    else:
-        await state.update_data(residence=None)
-    await state.set_state(StateReg.education)
-    markup = ReplyKeyboardMarkup(keyboard=[
-        [KeyboardButton(text='Высшее'),
-         KeyboardButton(text='Среднее профессиональное')],
-        [KeyboardButton(text='Среднее специальное'),
-         KeyboardButton(text='Среднее полное')],
-        [KeyboardButton(text='Студент')]
-    ], resize_keyboard=True)
-    await msg.answer('Какое у вас образование', reply_markup=markup)
-
-
-@router.message(StateReg.education)
-async def set_education(msg: Message, state: FSMContext):
-    if msg.text in ['Высшее', 'Среднее профессиональное']:
-        await state.update_data(education=msg.text)
-        await state.set_state(StateReg.profession)
-        await msg.answer('Введите вашу специальность', reply_markup=ReplyKeyboardRemove())
-    elif msg.text in ['Среднее специальное', 'Среднее полное']:
-        await state.update_data(education=msg.text)
-        await state.set_state(StateReg.salary)
-        await msg.answer('Введите минимальную желаемую оплату труда (рублей в час)', reply_markup=ReplyKeyboardRemove())
-    elif msg.text == 'Студент':
-        await state.update_data(education=msg.text)
-        await state.set_state(StateReg.course)
-        await msg.answer('На каком курсе вы учитесь', reply_markup=ReplyKeyboardRemove())
-    else:
-        await msg.answer('Выберите один из предложенных вариантов (дополнительная клавиатура)')
-
-
-@router.message(StateReg.course)
-async def set_course(msg: Message, state: FSMContext):
-    if not msg.text.isdigit():
-        await msg.answer(text='Некорректный ввод, введите только число без других символов', reply_markup=ReplyKeyboardRemove())
-    else:
-        await state.update_data(course=int(msg.text))
-        await state.set_state(StateReg.profession)
-        await msg.answer('Введите вашу специальность', reply_markup=ReplyKeyboardRemove())
-
-
-@router.message(StateReg.profession)
-async def set_profession(msg: Message, state: FSMContext):
-    await state.update_data(profession=msg.text)
-    await state.set_state(StateReg.salary)
-    await msg.answer('Введите минимальную желаемую оплату труда (рублей в час)', reply_markup=ReplyKeyboardRemove())
-
-
-@router.message(StateReg.salary)
-async def set_salary(msg: Message, state: FSMContext):
-    if not msg.text.isdigit():
-        await msg.answer(text='Некорректный ввод, введите только число без других символов')
-    else:
-        await state.update_data(salary=int(msg.text))
-        await state.set_state(StateReg.hard_work)
-        markup = ReplyKeyboardMarkup(keyboard=[
-            [KeyboardButton(text='Да'),
-             KeyboardButton(text='Нет')],
-        ], resize_keyboard=True)
-        await msg.answer('Готовы ли вы выполнять тяжелую работу (копать, ломать, строить)', reply_markup=markup)
-
-
-@router.message(StateReg.hard_work)
-async def set_hard_work(msg: Message, state: FSMContext):
-    if msg.text in ['Да', 'Нет']:
-        if msg.text == 'Да':
-            await state.update_data(hard_work=True)
-        else:
-            await state.update_data(hard_work=False)
-        await state.set_state(StateReg.mid_work)
-        markup = ReplyKeyboardMarkup(keyboard=[
-            [KeyboardButton(text='Да'),
-             KeyboardButton(text='Нет')],
-        ], resize_keyboard=True)
-        await msg.answer('Готовы ли вы выполнять сервисную работу (уборка помещений, прополка грядок и т.д.)',
-                         reply_markup=markup)
-    else:
-        await msg.answer(text='Выберите один из предложенных вариантов (дополнительная клавиатура)')
-
-
-@router.message(StateReg.mid_work)
-async def set_mid_work(msg: Message, state: FSMContext):
-    if msg.text in ['Да', 'Нет']:
-        if msg.text == 'Да':
-            await state.update_data(mid_work=True)
-        else:
-            await state.update_data(mid_work=False)
-        await state.set_state(StateReg.art_work)
-        await msg.answer('Готовы ли вы выполнять творческую работу (ведение соц.сетей, рисование и т.д.)')
-    else:
-        await msg.answer(text='Выберите один из предложенных вариантов (дополнительная клавиатура)')
-
-
-@router.message(StateReg.art_work)
+@router.message(StateReg.skills)
 async def set_art_work(msg: Message, state: FSMContext):
-    if msg.text in ['Да', 'Нет']:
-        if msg.text == 'Да':
-            await state.update_data(art_work=True)
-        else:
-            await state.update_data(art_work=False)
-        await state.set_state(StateReg.other_work)
-        markup = ReplyKeyboardMarkup(keyboard=[
-            [KeyboardButton(text='Пропустить')],
-        ], resize_keyboard=True)
-        await msg.answer('Введите иные работы, которые вы готовы выполнять', reply_markup=markup)
+    if msg.text == 'Пропустить':
+        await state.update_data(skills=None)
     else:
-        await msg.answer(text='Выберите один из предложенных вариантов (дополнительная клавиатура)')
-
-
-@router.message(StateReg.other_work)
-async def set_other_work(msg: Message, state: FSMContext):
-    if msg.text != 'Пропустить':
-        await state.update_data(other_work=msg.text)
-    else:
-        await state.update_data(other_work=None)
+        await state.update_data(skills=msg.text)
     await state.set_state(StateReg.tools)
     markup = ReplyKeyboardMarkup(keyboard=[
         [KeyboardButton(text='Пропустить')],
     ], resize_keyboard=True)
-    await msg.answer('Какие инструменты у вас есть в наличии (дрель, перфоратор, мотоблок)', reply_markup=markup)
+    await msg.answer('Какие инструменты у вас есть в наличии? (дрель, мотоблок и т.д.)', reply_markup=markup)
 
 
 @router.message(StateReg.tools)
@@ -248,24 +136,12 @@ async def set_other_info(msg: Message, state: FSMContext):
 
     # Формирование сообщения
     data = await state.get_data()
-    profile_msg = 'Ваши данные:\n\n'
-    for key, value in data.items():
-        if value is True:
-            value = 'Да'
-        if value is False:
-            value = 'Нет'
-        if value in ['Пропустить', None]:
-            continue
-        try:
-            profile_msg += '{0}: {1}\n'.format(profile_data[key], value)
-        except KeyError:
-            continue
+    mess = await create_profile_mess(data)
     markup = InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text='Сохранить', callback_data='save_profile'),
              InlineKeyboardButton(text='Заполнить заново', callback_data='edit_profile')],
         ]
     )
-
     # Отправка сообщения с данными
-    await msg.answer(profile_msg, reply_markup=markup)
+    await msg.answer(mess, reply_markup=markup)

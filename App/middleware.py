@@ -30,10 +30,11 @@ class AccessMiddleware(BaseMiddleware):
             callback: CallbackQuery = event.callback_query
             user_id = callback.from_user.id
             try:
-                user_access, user_status = await get_access(user_id)
-                if callback.data in admin.admin_command and user_access != 'admin' or user_status == 'blocked':
-                    await callback.message.answer("У вас недостаточно прав для выполнения этого запроса.")
-                    return
+                if callback.data in admin.admin_command:
+                    user_access, user_status = await get_access(user_id)
+                    if user_access != 'admin' or user_status == 'blocked':
+                        await callback.message.answer("У вас недостаточно прав для выполнения этого запроса.")
+                        return
             except Exception as e:
                 logger.error(f'Не удалось получить права пользователя: {e}')
                 await callback.message.answer("Произошла ошибка при проверке ваших прав доступа.")

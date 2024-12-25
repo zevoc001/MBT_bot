@@ -5,11 +5,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import (Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ReplyKeyboardRemove,
                            ReplyKeyboardMarkup, KeyboardButton)
 
-from App.logger_config import get_logger
 from App import states
 
-
-logger = get_logger(__name__)
 
 router = Router()
 

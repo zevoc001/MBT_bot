@@ -83,7 +83,7 @@ admin_customer_profile = InlineKeyboardMarkup(inline_keyboard=[
 
 # Пользователи
 user_menu_main = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text='👤️Профиль', callback_data='get_user_profile'),
+    [InlineKeyboardButton(text='👤️Профиль', callback_data='show_profile'),
      InlineKeyboardButton(text='📋Мои заказы', callback_data='get_users_orders')],
     [InlineKeyboardButton(text='📂Доступные заказы', callback_data='get_active_orders'),
      InlineKeyboardButton(text='🆘Написать в поддержку', callback_data='help')],
@@ -92,5 +92,5 @@ user_menu_main = InlineKeyboardMarkup(inline_keyboard=[
 user_menu_profile = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='✏️Редактировать', callback_data='edit_profile'),
      InlineKeyboardButton(text='❌Удалить аккаунт', callback_data='delete_profile')],
-    [InlineKeyboardButton(text='🏠Главное меню', callback_data='go_main_menu')],
+    [InlineKeyboardButton(text='🏠Главное меню', callback_data='menu')],
 ])

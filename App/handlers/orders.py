@@ -7,7 +7,7 @@ from aiogram.types import (CallbackQuery, Message, InlineKeyboardMarkup, InlineK
                            KeyboardButton, ReplyKeyboardRemove)
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from App.database import get_employers_by_name
+from App.database import get_customers_by_name
 from App.states import CreatingOrder as StateCreateOrder
 from App.utils import time_is_valid, create_order_mess_full
 
@@ -26,7 +26,7 @@ async def find_employer(callback: CallbackQuery, state: FSMContext):
 
 @router.message(StateCreateOrder.waiting_employer)
 async def find_employer(msg: Message, state: FSMContext):
-    employers = await get_employers_by_name(pattern=msg.text)
+    employers = await get_customers_by_name(pattern=msg.text)
     employers_keyboard = InlineKeyboardBuilder()
     for employer in employers:
         employers_keyboard.button(text=f"{employer['name']}", callback_data=f"employer_{employer['id']}")
@@ -301,7 +301,8 @@ async def waiting_add_info(msg: Message, state: FSMContext):
     order_mess = await create_order_mess_full(**info)
     await state.update_data(order_mess=order_mess)
     markup = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text='Отправить', callback_data='send_order'),
-         InlineKeyboardButton(text='Заполнить заново', callback_data='btn_create_order')]
+        [InlineKeyboardButton(text='Опубликовать', callback_data='publish_order'),
+         InlineKeyboardButton(text='Сохранить без публикации', callback_data='save_order')],
+        [InlineKeyboardButton(text='Заполнить заново', callback_data='btn_create_order')]
     ])
     await msg.answer(order_mess, reply_markup=markup)

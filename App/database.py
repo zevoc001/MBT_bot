@@ -14,6 +14,48 @@ from dateutil.relativedelta import relativedelta
 logger = get_logger(__name__)
 
 
+class PageNotFound(BaseException):
+    def __init__(self, *args):
+        if args:
+            self.message = args[0]
+        else:
+            self.message = None
+
+    def __str__(self):
+        if self.message:
+            return f'PageNotFound, {self.message}'
+        else:
+            return 'PageNotFound'
+
+
+class UpdatingError(BaseException):
+    def __init__(self, *args):
+        if args:
+            self.message = args[0]
+        else:
+            self.message = None
+
+    def __str__(self):
+        if self.message:
+            return f'UpdatingError, {self.message}'
+        else:
+            return 'UpdatingError'
+
+
+class UserNotFound(BaseException):
+    def __init__(self, *args):
+        if args:
+            self.message = args[0]
+        else:
+            self.message = None
+
+    def __str__(self):
+        if self.message:
+            return f'UserNotFound, {self.message}'
+        else:
+            return 'UserNotFound'
+
+
 async def get_data(url: str, params: dict = None):
     try:
         async with aiohttp.ClientSession() as session:
@@ -22,9 +64,9 @@ async def get_data(url: str, params: dict = None):
                 if response.status == 200:
                     data = await response.json()  # предполагается, что API возвращает JSON
                     return data
-                else:
+                elif response.status == 404:
                     error_message = f"Failed to fetch data from {url}. Status code: {response.status}"
-                    raise Exception(error_message)
+                    raise PageNotFound(error_message)
     except aiohttp.ClientError as e:
         # Handle network-related errors
         error_message = f"Error during HTTP request: {str(e)}"
@@ -66,10 +108,14 @@ async def put_data(url: str, data: dict = None, params: dict = None) -> dict:
             # Отправка POST запроса
             async with session.put(url, json=data, params=params, headers=headers) as response:
                 # Проверяем статус ответа
-                response.raise_for_status()
-                # Получаем и возвращаем JSON из ответа
-                result_data = await response.json()
-                return result_data
+                if response.status == 200:
+                    # Получаем и возвращаем JSON из ответа
+                    result_data = await response.json()
+                    return result_data
+                elif response.status == 422:
+                    raise UpdatingError
+                else:
+                    raise Exception
         except aiohttp.ClientError as e:
             # Обработка ошибок, связанных с сетью или HTTP
             logger.error(f'Ошибка сети: {e}')
@@ -196,6 +242,8 @@ async def get_user(user_id: int) -> dict:
     try:
         result = await get_data(url)
         return result
+    except PageNotFound:
+        raise UserNotFound(f'Не удалось получить пользователя: {e}')
     except Exception as e:
         logger.warning(f'Не удалось получить пользователя: {e}')
         raise e
@@ -209,8 +257,14 @@ async def add_user(user: dict) -> dict:
 
 async def update_user(user: dict) -> dict:
     url = f"{DB_URL}/api/users/"
-    result = await put_data(url, user)
-    return result
+    params = {'user_id': user['id']}
+    try:
+        result = await put_data(url=url, params=params, data=user)
+        return result
+    except UpdatingError:
+        raise UserNotFound
+    except Exception:
+        raise UpdatingError
 
 
 async def delete_user(user_id: int) -> dict:
@@ -220,40 +274,40 @@ async def delete_user(user_id: int) -> dict:
 
 
 # Employers
-async def get_employers_all() -> list:
-    url = f'{DB_URL}/api/employers/'
+async def get_customers_all() -> list:
+    url = f'{DB_URL}/api/customers/'
     result = await get_data(url)
     return result
 
 
-async def get_employers_by_name(pattern: str) -> dict:
-    url = f'{DB_URL}/api/employers/name/'
+async def get_customers_by_name(pattern: str) -> dict:
+    url = f'{DB_URL}/api/customers/name/'
     params = {'pattern': pattern}
     result = await get_data(url, params)
     return result
 
 
-async def get_employer(employer_id) -> dict:
-    url = f'{DB_URL}/api/employers/{employer_id}'
+async def get_customers(customer_id) -> dict:
+    url = f'{DB_URL}/api/customers/{customer_id}'
     result = await get_data(url)
     return result
 
 
-async def add_employer(employer: dict):
-    url = f"{DB_URL}/api/employers/"
-    result = await post_data(url, employer)
+async def add_customers(customer: dict):
+    url = f"{DB_URL}/api/customers/"
+    result = await post_data(url, customer)
     return result
 
 
-async def update_employer(employer_id: int, employer: dict):
-    url = f"{DB_URL}/api/employers/"
-    params = {'employer_id': employer_id}
-    result = await put_data(url, employer, params)
+async def update_customer(customer_id: int, customer: dict):
+    url = f"{DB_URL}/api/customers/"
+    params = {'customers_id': customer_id}
+    result = await put_data(url, customer, params)
     return result
 
 
-async def delete_employer(employer_id: int):
-    url = f"{DB_URL}/api/employers/{employer_id}"
+async def delete_customers(customer_id: int):
+    url = f"{DB_URL}/api/customers/{customer_id}"
     result = await delete_data(url)
     return result
 
@@ -298,16 +352,6 @@ async def update_order(order_id: int, order: dict):
         raise e
 
 
-async def finish_order(order_id: int):
-    url = f'{DB_URL}/api/orders/status/'
-    params = {'order_id': order_id}
-    try:
-        await put_data(url, params=params)
-    except Exception as e:
-        logger.error(f'Не удалось завершить заказ: {e}')
-        raise e
-
-
 async def order_add_worker(order_id: int, worker_id: int):
     url = f'{DB_URL}/api/orders/{order_id}/workers/'
     data = {
@@ -336,41 +380,6 @@ async def order_remove_worker(order_id: int, worker_id: int):
 
 
 async def get_users_orders(user_id):
-    url = f'{DB_URL}/api/orders/worker/'
-    params = {'user_id': user_id}
-    result = await get_data(url, params)
+    url = f'{DB_URL}/api/users/{user_id}/orders/'
+    result = await get_data(url)
     return result
-
-
-async def upload_photo(file_path: str) -> dict:
-    url = f"{DB_URL}/api/photo/"
-    headers = {
-        'Authorization': DB_ACCESS_TOKEN
-    }
-
-    async with aiohttp.ClientSession() as session:
-        with open(file_path, 'rb') as file:
-            data = aiohttp.FormData()
-            data.add_field('photo', file, filename=os.path.basename(file_path))
-
-            async with session.post(url, headers=headers, data=data) as response:
-                if response.status == 200:
-                    return await response.json()
-                else:
-                    response_text = await response.text()
-                    raise Exception(f"Error {response.status}: {response_text}")
-
-
-async def download_photo(file_name: str) -> bytes:
-    url = f"{DB_URL}/api/photo/{file_name}"
-    headers = {
-        'Authorization': DB_ACCESS_TOKEN
-    }
-
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url, headers=headers) as response:
-            if response.status == 200:
-                return await response.read()
-            else:
-                response_text = await response.text()
-                raise Exception(f"Error {response.status}: {response_text}")

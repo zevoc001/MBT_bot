@@ -1,0 +1,17 @@
+Данные профиля:
+
+👤 ФИО: {{name}}
+{% if sex == 'Мужской' %}🧍‍♂️ Пол: {{sex}}{% else %}🧍‍♀️ Пол: {{sex}}{% endif %}
+🎂 Дата рождения: {{born_date}}
+🛠️ Навыки: {{skills}}
+📞 Номер телефона: {{phone}}
+{% if tools %}🔧 Инструменты: {{tools}}{% endif %}
+{% if transport %}🚗 Транспорт: {{transport}}{% endif %}
+📝 Дополнительно: {{other_info}}
+
+⭐ Рейтинг: {{rating}}
+💰 Заработал: {{profit}}
+📦 Выполнил заказов: {{orders}}
+
+{% if wallet %}💳 Номер карты: *{{wallet[-4:]}}{% endif %}
+{% if reg_date %}📅 Дата регистрации: {{reg_date}}{% endif %}
