@@ -1,13 +1,12 @@
 import asyncio
-from logger_config import get_logger
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
 import config
-from handlers.handlers import router as handlers_router
-from handlers.registrtion import router as reg_router
-from handlers.orders import router as order_router
+from handlers import router as handlers_router
+from registrtion import router as reg_router
+from orders import router as order_router
 
 
 from middleware import AccessMiddleware
