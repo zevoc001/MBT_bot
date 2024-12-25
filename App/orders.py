@@ -7,9 +7,9 @@ from aiogram.types import (CallbackQuery, Message, InlineKeyboardMarkup, InlineK
                            KeyboardButton, ReplyKeyboardRemove)
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from App.database import get_customers_by_name
-from App.states import CreatingOrder as StateCreateOrder
-from App.utils import time_is_valid, create_order_mess_full
+from database import get_customers_by_name
+from states import CreatingOrder as StateCreateOrder
+from utils import time_is_valid, create_order_mess_full
 
 router = Router()
 

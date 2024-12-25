@@ -3,12 +3,9 @@ import re
 from aiogram import Router
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ReplyKeyboardMarkup, \
     KeyboardButton, ReplyKeyboardRemove
-from App.states import UserRegistration as StateReg
+from states import UserRegistration as StateReg
 from aiogram.fsm.context import FSMContext
-from App.logger_config import get_logger
-from App.utils import create_profile_mess
-
-logger = get_logger(__name__)
+from utils import create_profile_mess
 
 router = Router()
 
