@@ -7,13 +7,12 @@ from aiogram import Router, F
 
 from aiogram.types import (Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ReplyKeyboardRemove,
                            ReplyKeyboardMarkup, KeyboardButton)
-from states import StateMsg, StateFindUser, StateRegEmployer, StateCreateOrder
+from App.states import SendingMessage as StateMsg, FindingUser as StateFindUser, AddingEmployer as StateRegEmployer, CreatingOrder as StateCreateOrder
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 import database as db
 import keyboard
-import text
-import utils
+from App import utils
 
 router = Router()
 
@@ -48,16 +47,8 @@ async def find_user(msg: Message, state: FSMContext):
 async def choose_user(callback: CallbackQuery, state: FSMContext):
     user_id = int(callback.data.split(':')[1])
     user_data = await db.get_user(user_id)
-    msg = 'Данные профиля:\n'
-    for key in text.profile_data:
-        column = text.profile_data[key]
-        value = user_data[key]
-        if value is not None:
-            if value is True:
-                value = 'Да'
-            if value is False:
-                value = 'Нет'
-            msg += '\n{0}: {1}'.format(column, value)
+    msg = await 'Данные профиля:\n' + utils.create_profile_mess(user_data)
+
     markup = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text='Главное меню', callback_data='go_main_menu'),
          InlineKeyboardButton(text='Заблокировать', callback_data=f'block_user:{user_id}')]

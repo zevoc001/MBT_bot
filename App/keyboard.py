@@ -17,7 +17,7 @@ admin_menu_workers = InlineKeyboardMarkup(inline_keyboard=[
 # Работодатели
 admin_menu_customers = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='🔍Найти', callback_data='go_menu_find_customers'),
-     InlineKeyboardButton(text='➕Добавить', callback_data='add_customer'),],
+     InlineKeyboardButton(text='➕Добавить', callback_data='add_employer'),],
     [InlineKeyboardButton(text='🔙Назад', callback_data='go_menu_admin'),]
 ])
 
