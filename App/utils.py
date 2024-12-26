@@ -20,7 +20,7 @@ async def create_order_mess_full(**kwargs) -> str:
         kwargs['order_date'] = date.fromisoformat(kwargs['order_date'])
         kwargs['order_date'] = kwargs['order_date'].strftime('%d.%m.%Y')
 
-        environment = Environment(loader=FileSystemLoader('App/templates/'))
+        environment = Environment(loader=FileSystemLoader('templates/'))
         template = environment.get_template('order_mess.txt')
         mess = template.render(kwargs)
         return mess
@@ -30,7 +30,7 @@ async def create_order_mess_full(**kwargs) -> str:
 
 async def create_order_mess_admin(**kwargs) -> str:
     try:
-        environment = Environment(loader=FileSystemLoader('App/templates/'))
+        environment = Environment(loader=FileSystemLoader('templates/'))
         template = environment.get_template('order_active.txt')
 
         data = {
@@ -51,7 +51,7 @@ async def create_order_mess_admin(**kwargs) -> str:
 
 async def create_profile_mess(kwargs: dict) -> str:
     try:
-        environment = Environment(loader=FileSystemLoader('App/templates/'))
+        environment = Environment(loader=FileSystemLoader('templates/'))
         template = environment.get_template('user_profile.txt')
 
         data = {
