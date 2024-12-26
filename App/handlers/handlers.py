@@ -539,5 +539,3 @@ async def cancel_order(callback: CallbackQuery):
     except Exception as e:
         await callback.message.answer('Не удалось отказаться от заказа, позвоните по номеру 8(8652)-222-007')
     await callback.answer()
-
-
