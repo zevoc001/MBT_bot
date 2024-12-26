@@ -2,10 +2,11 @@ import os
 
 from dotenv import load_dotenv
 
-load_dotenv('App/config.env')
+load_dotenv('.env')
 
 # Токен бота Телеграм
 TOKEN = os.getenv('TOKEN')
+print(TOKEN)
 
 # URL адрес сервера базы данных
 DB_URL = os.getenv('DB_URL')

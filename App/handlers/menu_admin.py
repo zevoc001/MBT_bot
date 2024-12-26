@@ -12,7 +12,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 import database as db
 import keyboard
-from App import utils
+import utils
 
 router = Router()
 
